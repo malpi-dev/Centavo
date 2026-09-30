@@ -5,9 +5,9 @@
 
 ## Avance
 
-`▒░░░░░░░░░░░░░` 0/14 fases terminadas (0 %)
+`█░░░░░░░░░░░░░` 1/14 fases terminadas (7 %)
 
-**Fase actual:** Fase 01 · Andamiaje (en progreso)
+**Fase actual:** ninguna — la siguiente es la Fase 02 · Core
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -15,7 +15,7 @@
 
 | # | Fase | Rama | Estado | Inicio | Fin |
 |---|---|---|---|---|---|
-| 01 | Andamiaje | `feat/fase-01-andamiaje` | 🚧 En progreso | 2026-09-29 | — |
+| 01 | Andamiaje | `feat/fase-01-andamiaje` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 02 | Core | `feat/fase-02-core` | ⏳ Pendiente | — | — |
 | 03 | Dominio | `feat/fase-03-dominio` | ⏳ Pendiente | — | — |
 | 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ⏳ Pendiente | — | — |
@@ -38,17 +38,17 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 
 | Paquete / herramienta | Versión |
 |---|---|
-| Flutter / Dart | — |
-| flutter_riverpod / riverpod_generator | — |
-| go_router | — |
-| freezed / freezed_annotation | — |
-| drift / drift_flutter / drift_dev | — |
-| supabase_flutter | — |
-| fl_chart | — |
-| local_auth | — |
-| share_plus | — |
-| very_good_analysis | — |
-| Supabase CLI | — |
+| Flutter / Dart | 3.44.6 (stable) / Dart 3.12.2 |
+| flutter_riverpod / riverpod_generator | 3.4.3 / 4.0.9 |
+| go_router | 17.5.0 |
+| freezed / freezed_annotation | 4.0.0-dev.3 (prerelease) / 3.1.0 |
+| drift / drift_flutter / drift_dev | 2.35.0 / 0.3.1 / 2.35.0 |
+| supabase_flutter | 2.17.2 |
+| fl_chart | 1.2.0 |
+| local_auth | 3.0.2 |
+| share_plus | 13.3.0 |
+| very_good_analysis | 10.3.0 |
+| Supabase CLI | 2.118.0 |
 | Maestro | — (fase 13) |
 
 ## Registro
@@ -61,7 +61,11 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
 
-_Sin entradas todavía._
+### Fase 01 · Andamiaje — 2026-09-29
+- **Hecho:** `flutter create` (`com.malpidev.centavo`), dependencias de §9 (sin `csv`), `very_good_analysis`, `build.yaml`, l10n (`app_en.arb`), `MainActivity` con `FlutterFragmentActivity`, `USE_BIOMETRIC`, cleartext solo en debug, estructura de carpetas, `.env.example.json`, `.gitignore`, `tool/check.sh` y `tool/check_architecture.sh`, app mínima + test de humo, `CLAUDE.md` y `README.md`, CI. `./tool/check.sh` pasa; la app abre en el emulador Android (Pixel_10_Pro) mostrando "Centavo"; `flutter build apk --debug` OK.
+- **PR:** ver historial de GitHub (`feat: phase 01 - project scaffolding`).
+- **Decisiones:** ver tabla de desviaciones (freezed 4 prerelease, `flutter_lints` eliminado, build_runner sin `--delete-conflicting-outputs`, checkout@v7).
+- **Pendientes:** ninguno.
 
 ## Decisiones y desviaciones respecto a la definición
 
@@ -91,6 +95,11 @@ _Sin entradas todavía._
 | 2026-09-25 | Plan | Fuentes Manrope + Inter en TTF estáticos (subset latino) descargados de Fontsource. | Decisión abierta de §17 resuelta a favor de la definición; los TTF estáticos evitan problemas de pesos con fuentes variables. |
 | 2026-09-25 | Plan | Datos de demo: patrón determinista definido en la fase 05 (§ "Patrón del dataset") y replicado en `seed.sql` (fase 11). En el mes actual los límites de *Coffee* y *Entertainment* se calculan a partir del gasto real para garantizar un estado `exceeded` y uno `warning` cualquier día del mes. | §12.2 exige esos estados en el mes actual, que depende del día en que se abra la app. |
 | 2026-09-25 | Plan | Decisiones abiertas de §17 resueltas: código generado **no** se commitea; Maestro **no** corre en CI (se ejecuta en local antes del tag); `backup_batch` RPC **no** se crea salvo que el upsert por lotes se mida lento. | Propuestas de la propia definición. |
+| 2026-09-29 | 01 | `freezed` queda en `^4.0.0-dev.3` (prerelease). | La estable 4.0.x exige Dart ≥ 3.13 (hay 3.12.2) y la 3.x exige `analyzer` <13, incompatible con `drift_dev`/`riverpod_generator` actuales. Revisar al actualizar Flutter. |
+| 2026-09-29 | 01 | Se elimina `flutter_lints` del `pubspec.yaml` generado. | Lo reemplaza `very_good_analysis`. |
+| 2026-09-29 | 01 | `dart run build_runner build` avisa que `--delete-conflicting-outputs` ya no existe (se ignora). Se deja el flag en `check.sh` según la guía. | Inofensivo; quitarlo en una fase futura. |
+| 2026-09-29 | 01 | En CI se usa `actions/checkout@v7` y `flutter-version: 3.44.6`. | Última versión mayor disponible; misma versión que local. |
+| 2026-09-29 | 01 | Dependencias de desarrollo ordenadas alfabéticamente. | Lint `sort_pub_dependencies`. |
 
 ## Bloqueos
 
