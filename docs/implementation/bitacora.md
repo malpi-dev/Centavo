@@ -5,9 +5,9 @@
 
 ## Avance
 
-`███░░░░░░░░░░░` 3/14 fases terminadas (21 %)
+`███▒░░░░░░░░░░` 3/14 fases terminadas (21 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 04 · Persistencia Drift
+**Fase actual:** Fase 04 · Persistencia Drift (en progreso)
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -18,7 +18,7 @@
 | 01 | Andamiaje | `feat/fase-01-andamiaje` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 02 | Core | `feat/fase-02-core` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 03 | Dominio | `feat/fase-03-dominio` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ⏳ Pendiente | — | — |
+| 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | 🚧 En progreso | 2026-09-29 | — |
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ⏳ Pendiente | — | — |
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ⏳ Pendiente | — | — |
 | 07 | Movimientos | `feat/fase-07-movimientos` | ⏳ Pendiente | — | — |
