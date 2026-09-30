@@ -163,5 +163,46 @@
   },
   "removeBudget": "Remove budget",
   "removeBudgetTitle": "Remove this budget?",
-  "budgetRemoved": "Budget removed"
+  "budgetRemoved": "Budget removed",
+  "dashboardTitle": "Dashboard",
+  "incomeLabel": "Income",
+  "expensesLabel": "Expenses",
+  "balanceLabel": "Balance",
+  "spentLabel": "Spent",
+  "others": "Others",
+  "noExpensesThisMonth": "No expenses this month",
+  "lastSixMonths": "Last 6 months",
+  "notEnoughData": "Not enough data yet",
+  "budgetsCardTitle": "Budgets",
+  "seeAll": "See all",
+  "noBudgetsThisMonth": "No budgets this month",
+  "setUpBudgets": "Set up budgets",
+  "chartTooltip": "{month} · Income {income} · Expenses {expenses}",
+  "@chartTooltip": {
+    "placeholders": {
+      "month": {"type": "String"},
+      "income": {"type": "String"},
+      "expenses": {"type": "String"}
+    }
+  },
+  "expensesByCategorySemantics": "Expenses by category: {summary}",
+  "@expensesByCategorySemantics": {
+    "placeholders": {
+      "summary": {"type": "String"}
+    }
+  },
+  "percentValue": "{percent} %",
+  "@percentValue": {
+    "placeholders": {
+      "percent": {"type": "int"}
+    }
+  },
+  "sliceSemantics": "{name} {percent} %",
+  "@sliceSemantics": {
+    "placeholders": {
+      "name": {"type": "String"},
+      "percent": {"type": "int"}
+    }
+  },
+  "incomeVsExpensesSemantics": "Income and expenses for the last 6 months"
 }
