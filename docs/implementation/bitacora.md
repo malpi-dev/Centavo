@@ -5,9 +5,9 @@
 
 ## Avance
 
-`████████▒░░░░░` 8/14 fases terminadas (57 %)
+`█████████▒░░░░` 9/14 fases terminadas (64 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 10 · Ajustes, bloqueo y CSV
+**Fase actual:** Fase 10 · Ajustes, bloqueo y CSV (🚧 en progreso)
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -24,7 +24,7 @@
 | 07 | Movimientos | `feat/fase-07-movimientos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ⏳ Pendiente | — | — |
+| 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | 🚧 En progreso | 2026-09-29 | — |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ⏳ Pendiente | — | — |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ⏳ Pendiente | — | — |
 | 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | ⏳ Pendiente | — | — |
