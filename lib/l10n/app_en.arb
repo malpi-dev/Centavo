@@ -40,5 +40,8 @@
   "validationNotAllowed": "Not allowed",
   "welcomeTitle": "Welcome to Centavo",
   "startFresh": "Start fresh",
+  "exploreDemo": "Explore demo",
+  "exitDemo": "Exit demo",
+  "demoBannerMessage": "Demo mode \u2014 changes aren't saved",
   "comingSoon": "Coming soon"
 }
