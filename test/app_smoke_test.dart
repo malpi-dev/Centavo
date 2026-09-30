@@ -28,7 +28,7 @@ void main() {
     expect(find.byKey(const Key('budgets-not-budgeted')), findsOneWidget);
   });
 
-  testWidgets('onboarded users land on the dashboard', (tester) async {
+  testCentavo('onboarded users land on the dashboard', (tester) async {
     await pumpCentavo(
       tester,
       settings: const AppSettings(onboardingCompleted: true),

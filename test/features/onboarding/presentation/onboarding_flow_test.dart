@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import '../../../helpers/pump_centavo.dart';
 
 void main() {
-  testWidgets(
+  testCentavo(
     'Start fresh preselects the locale currency and seeds categories',
     (
       tester,
