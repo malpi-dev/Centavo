@@ -95,4 +95,57 @@ class MockBudgetRepository implements BudgetRepository {
   @override
   Future<void> softDeleteByCategory(String categoryId) async =>
       _tombstone((b) => b.categoryId == categoryId);
+
+  @override
+  Future<List<Budget>> changedSince(DateTime? sinceUtc) async {
+    final rows =
+        _store.budgets
+            .where((b) => sinceUtc == null || b.updatedAt.isAfter(sinceUtc))
+            .toList()
+          ..sort((a, b) {
+            final byTime = a.updatedAt.compareTo(b.updatedAt);
+            return byTime != 0 ? byTime : a.id.compareTo(b.id);
+          });
+    return List.unmodifiable(rows);
+  }
+
+  @override
+  Future<void> mergeFromBackup(List<Budget> incoming) async {
+    for (final row in incoming) {
+      final index = _store.budgets.indexWhere((b) => b.id == row.id);
+      if (index >= 0 &&
+          !_store.budgets[index].updatedAt.isBefore(row.updatedAt)) {
+        continue;
+      }
+      var toWrite = row;
+      if (row.deletedAt == null) {
+        final rivalIndex = _store.budgets.indexWhere(
+          (b) =>
+              b.id != row.id &&
+              b.deletedAt == null &&
+              b.categoryId == row.categoryId &&
+              b.month == row.month,
+        );
+        if (rivalIndex >= 0) {
+          final now = _clock.nowUtc();
+          final rival = _store.budgets[rivalIndex];
+          if (rival.updatedAt.isBefore(row.updatedAt)) {
+            _store.budgets[rivalIndex] = rival.copyWith(
+              deletedAt: now,
+              updatedAt: now,
+            );
+          } else {
+            toWrite = row.copyWith(deletedAt: now, updatedAt: now);
+          }
+        }
+      }
+      final target = _store.budgets.indexWhere((b) => b.id == row.id);
+      if (target >= 0) {
+        _store.budgets[target] = toWrite;
+      } else {
+        _store.budgets.add(toWrite);
+      }
+    }
+    _store.notify(MockTable.budgets);
+  }
 }

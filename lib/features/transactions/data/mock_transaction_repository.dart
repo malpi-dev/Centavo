@@ -150,4 +150,30 @@ class MockTransactionRepository implements TransactionRepository {
   Future<int> countByCategory(String categoryId) async => _store.transactions
       .where((t) => t.categoryId == categoryId && t.deletedAt == null)
       .length;
+
+  @override
+  Future<List<MoneyTransaction>> changedSince(DateTime? sinceUtc) async {
+    final rows =
+        _store.transactions
+            .where((t) => sinceUtc == null || t.updatedAt.isAfter(sinceUtc))
+            .toList()
+          ..sort((a, b) {
+            final byTime = a.updatedAt.compareTo(b.updatedAt);
+            return byTime != 0 ? byTime : a.id.compareTo(b.id);
+          });
+    return List.unmodifiable(rows);
+  }
+
+  @override
+  Future<void> mergeFromBackup(List<MoneyTransaction> incoming) async {
+    for (final row in incoming) {
+      final index = _indexOf(row.id);
+      if (index < 0) {
+        _store.transactions.add(row);
+      } else if (_store.transactions[index].updatedAt.isBefore(row.updatedAt)) {
+        _store.transactions[index] = row;
+      }
+    }
+    _store.notify(MockTable.transactions);
+  }
 }

@@ -168,4 +168,48 @@ class MockCategoryRepository implements CategoryRepository {
     }
     if (changed) _store.notify(MockTable.categories);
   }
+
+  @override
+  Future<List<Category>> changedSince(DateTime? sinceUtc) async {
+    final rows =
+        _store.categories
+            .where((c) => sinceUtc == null || c.updatedAt.isAfter(sinceUtc))
+            .toList()
+          ..sort((a, b) {
+            final byTime = a.updatedAt.compareTo(b.updatedAt);
+            return byTime != 0 ? byTime : a.id.compareTo(b.id);
+          });
+    return List.unmodifiable(rows);
+  }
+
+  @override
+  Future<void> mergeFromBackup(List<Category> incoming) async {
+    for (final row in incoming) {
+      final index = _indexOf(row.id);
+      if (index >= 0 &&
+          !_store.categories[index].updatedAt.isBefore(row.updatedAt)) {
+        continue;
+      }
+      var toWrite = row;
+      if (row.isActive) {
+        final taken = {
+          for (final c in _store.categories)
+            if (c.id != row.id && c.type == row.type && c.isActive)
+              c.name.toLowerCase(),
+        };
+        toWrite = row.copyWith(
+          name: disambiguateCategoryName(
+            row.name,
+            (candidate) => taken.contains(candidate.toLowerCase()),
+          ),
+        );
+      }
+      if (index >= 0) {
+        _store.categories[index] = toWrite;
+      } else {
+        _store.categories.add(toWrite);
+      }
+    }
+    _store.notify(MockTable.categories);
+  }
 }

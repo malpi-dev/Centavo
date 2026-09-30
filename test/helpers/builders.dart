@@ -58,13 +58,15 @@ Budget aBudget({
   String categoryId = 'cat-1',
   YearMonth month = const YearMonth(2026, 10),
   int limitMinor = 10000,
+  DateTime? createdAt,
+  DateTime? updatedAt,
   DateTime? deletedAt,
 }) => Budget(
   id: id,
   categoryId: categoryId,
   month: month,
   limitMinor: limitMinor,
-  createdAt: _t0,
-  updatedAt: _t0,
+  createdAt: createdAt ?? _t0,
+  updatedAt: updatedAt ?? _t0,
   deletedAt: deletedAt,
 );

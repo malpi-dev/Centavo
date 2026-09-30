@@ -4,6 +4,7 @@ import 'package:centavo/core/presentation/l10n_extension.dart';
 import 'package:centavo/core/presentation/root_scaffold_messenger.dart';
 import 'package:centavo/core/router/app_router.dart';
 import 'package:centavo/core/theme/app_theme.dart';
+import 'package:centavo/features/backup/presentation/auto_backup_controller.dart';
 import 'package:centavo/features/demo/presentation/demo_banner.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
@@ -16,6 +17,7 @@ class CentavoApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(autoBackupControllerProvider);
     return MaterialApp.router(
       onGenerateTitle: (context) => context.l10n.appTitle,
       scaffoldMessengerKey: rootScaffoldMessengerKey,

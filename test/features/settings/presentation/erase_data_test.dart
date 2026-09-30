@@ -1,6 +1,7 @@
 import 'package:centavo/core/di/repository_providers.dart';
 import 'package:centavo/core/domain/local_date.dart';
 import 'package:centavo/core/domain/transaction_type.dart';
+import 'package:centavo/features/backup/data/mock_auth_repository.dart';
 import 'package:centavo/features/categories/domain/default_categories.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
@@ -11,9 +12,14 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../../helpers/pump_centavo.dart';
 
-Future<ProviderContainer> _openErase(WidgetTester tester) async {
+Future<ProviderContainer> _openErase(
+  WidgetTester tester, {
+  MockAuthRepository? auth,
+}) async {
   final app = await pumpCentavo(
     tester,
+    auth: auth,
+    backupAvailable: auth == null ? null : true,
     settings: const AppSettings(
       onboardingCompleted: true,
     ),
@@ -95,4 +101,19 @@ void main() {
       expect(find.byKey(const Key('welcome-start-fresh')), findsOneWidget);
     },
   );
+
+  testCentavo('erasing also signs out of the backup (the cloud is kept)', (
+    tester,
+  ) async {
+    final auth = MockAuthRepository(latency: Duration.zero);
+    await auth.verifyCode(email: 'me@test.dev', code: '123456');
+    await _openErase(tester, auth: auth);
+
+    await tester.tap(find.byKey(const Key('erase-continue')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('erase-confirm')));
+    await tester.pumpAndSettle();
+
+    expect(auth.currentEmail, isNull);
+  });
 }

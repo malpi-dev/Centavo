@@ -5,9 +5,9 @@
 
 ## Avance
 
-`███████████░░░` 11/14 fases terminadas (79 %)
+`████████████░░` 12/14 fases terminadas (86 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 12 · Respaldo
+**Fase actual:** ninguna — la siguiente es la Fase 13 · Pulido y E2E
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -26,7 +26,7 @@
 | 09 | Dashboard | `feat/fase-09-dashboard` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 12 | Respaldo | `feat/fase-12-respaldo` | ⏳ Pendiente | — | — |
+| 12 | Respaldo | `feat/fase-12-respaldo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | ⏳ Pendiente | — | — |
 | 14 | Lanzamiento | `feat/fase-14-lanzamiento` | ⏳ Pendiente | — | — |
 
@@ -61,6 +61,11 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 12 · Respaldo — 2026-09-29
+- **Hecho:** dominio de respaldo (`AuthRepository`, `BackupRepository`, `SyncStateRepository`, `RunBackup`, `RestoreBackup`, validadores); `changedSince`/`mergeFromBackup` en los 3 repos locales (Drift y mock, mismas reglas LWW, sufijo " 2" en categorías y ganador por `updatedAt` en presupuestos); DTOs, `mapSupabaseError`, repos Supabase y mock (auth OTP, respaldo, sync state); providers; pantallas Backup, Sign in y Verify; `AutoBackupController` (≥ 24 h, al abrir/reanudar); fila Backup en Settings, *Restore from backup* en Welcome, redirect 3, *Erase* cierra sesión; `Supabase.initialize` en `main`.
+- **Verificación:** `./tool/check.sh` en verde (464 tests). Test de integración `test/integration/backup_roundtrip_test.dart` (tag `supabase`) ejecutado contra Supabase local: respaldo A → restauración B idéntica, y *Delete my backup* vacía la nube. En el emulador (emulator-5554, `.env.json` local): flujo E con `demo@centavo.test` (OTP leído en Mailpit) restauró el dataset de demo al Dashboard; *Back up now* mostró "Last backup: just now" y actualizó `synced_at` en Postgres.
+- **Pendientes:** no probados a mano en emulador: modo avión / `supabase stop` (CA1, cubierto con tests de widget y mapper), LWW entre dos dispositivos (cubierto con tests de contrato), flujo D completo con datos propios. No se corrió `supabase db reset`/`test db` (la fase no toca la BD).
 
 ### Fase 11 · Backend Supabase — 2026-09-29
 - **Hecho:** `supabase init` + `config.toml` (project_id `centavo`, schema `centavo` expuesto, confirmaciones y OTP de 6 dígitos, `email_sent = 30` solo local, plantillas `confirmation`/`magic_link` con `{{ .Token }}` en `supabase/templates/otp.html`); migración `20260928000000_centavo_init.sql` (tablas, índices, triggers LWW/`synced_at`/tipo de categoría, `ensure_profile(p_currency_code)`, grants, RLS en las 4 tablas con 14 políticas comentadas); `seed.sql` local (usuario demo `demo@centavo.test`, 13 categorías, 133 movimientos hoy, 15 presupuestos; replica el patrón de la fase 05); pgTAP `rls_test.sql` (18) y `triggers_test.sql` (14); job `database` en CI; `.env.json` local (ignorado por git).
@@ -208,6 +213,13 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 11 | `check_category_type` usa `if`/`elsif` anidados por tabla en vez de `and` en una sola condición. | plpgsql no hace cortocircuito: `new.type` fallaba en `budgets` (sin columna `type`). |
 | 2026-09-29 | 11 | En los tests pgTAP, `update`/`delete` con CTE se ejecutan como `with … select is(count(*)…) from cte` de nivel superior. | Postgres no admite CTE con DML dentro de una subconsulta. |
 | 2026-09-29 | 11 | El seed numera los movimientos por mes con `row_number()` (orden por día y regla) para el `createdAt`; los presupuestos usan `gen_random_uuid()`. | SQL puro; los ids no necesitan coincidir con los del demo en Dart. |
+| 2026-09-29 | 12 | Se añade `http` como dependencia directa. | `mapSupabaseError` debe reconocer `http.ClientException` (ya era transitiva de supabase_flutter); el lint `depend_on_referenced_packages` exige declararla. |
+| 2026-09-29 | 12 | `mapSupabaseError` solo trata un `PostgrestException.code` como HTTP ≥ 500 si tiene 3 caracteres. | Los SQLSTATE (p. ej. `23505`) son numéricos de 5 dígitos y se confundían con errores de servidor. |
+| 2026-09-29 | 12 | `Supabase.initialize` usa `publishableKey:` (la firma instalada lo admite; `anonKey` está deprecado). Los DTO usan un único `UtcDateTimeConverter` (sirve también para `DateTime?`). | API de supabase_flutter 2.17.2 / json_serializable. |
+| 2026-09-29 | 12 | `demoOtpCode` vive en el dominio; el mock de auth y la ayuda "Demo code" lo comparten. Sign in oculta *Explore demo* si ya estás en demo. | `presentation/` no puede importar `data/`. |
+| 2026-09-29 | 12 | Tras restaurar desde la bienvenida se navega explícitamente a `/dashboard`; si la nube tiene perfil pero 0 categorías se siembran las por defecto. | El redirect solo actúa en `/welcome*`; evita app sin categorías. |
+| 2026-09-29 | 12 | `dart_test.yaml` declara el tag `supabase` pero no lo excluye; el test de integración se salta solo sin variables de entorno. | `exclude_tags` en el YAML se combina con `--tags` y impedía ejecutarlo. |
+| 2026-09-29 | 12 | El verify de `from=settings` llama solo a `backUpNow()` (`RunBackup` ya hace `ensureProfile`). | Evita una llamada duplicada. |
 
 ## Bloqueos
 

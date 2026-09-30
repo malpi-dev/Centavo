@@ -1,10 +1,12 @@
 import 'package:centavo/core/di/app_mode_provider.dart';
+import 'package:centavo/core/di/repository_providers.dart';
 import 'package:centavo/core/domain/app_mode.dart';
 import 'package:centavo/core/domain/currency.dart';
 import 'package:centavo/core/presentation/error_messages.dart';
 import 'package:centavo/core/presentation/l10n_extension.dart';
 import 'package:centavo/core/presentation/root_scaffold_messenger.dart';
 import 'package:centavo/core/router/routes.dart';
+import 'package:centavo/features/backup/presentation/backup_providers.dart';
 import 'package:centavo/features/security/presentation/lock_controller.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
 import 'package:centavo/features/settings/presentation/erase_data.dart';
@@ -14,6 +16,7 @@ import 'package:centavo/l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 
 String _themeLabel(AppThemePreference p, AppLocalizations l10n) => switch (p) {
   AppThemePreference.system => l10n.themeSystem,
@@ -65,6 +68,15 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () => context.push(Routes.categories),
           ),
+          if (ref.watch(isBackupAvailableProvider))
+            ListTile(
+              key: const Key('settings-backup'),
+              leading: const Icon(Icons.cloud_outlined),
+              title: Text(l10n.settingsBackup),
+              subtitle: Text(_backupSubtitle(ref, l10n)),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () => context.push(Routes.backup),
+            ),
           ListTile(
             key: const Key('settings-export'),
             leading: const Icon(Icons.ios_share),
@@ -106,6 +118,18 @@ class SettingsScreen extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  String _backupSubtitle(WidgetRef ref, AppLocalizations l10n) {
+    final email = ref.watch(signedInEmailProvider).value;
+    if (email == null) return l10n.backupNotSignedIn;
+    final last = ref.watch(lastBackupAtProvider).value;
+    if (last == null) return l10n.backupLastBackupNever;
+    final now = ref.read(clockProvider).nowUtc();
+    final when = now.difference(last).abs() < const Duration(minutes: 1)
+        ? l10n.backupJustNow
+        : DateFormat.yMMMd(l10n.localeName).add_Hm().format(last.toLocal());
+    return l10n.backupLastBackup(when);
   }
 
   Future<void> _pickTheme(

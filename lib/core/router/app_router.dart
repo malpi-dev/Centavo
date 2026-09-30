@@ -1,9 +1,13 @@
 import 'package:centavo/core/di/app_mode_provider.dart';
+import 'package:centavo/core/di/repository_providers.dart';
 import 'package:centavo/core/domain/transaction_type.dart';
 import 'package:centavo/core/domain/year_month.dart';
 import 'package:centavo/core/router/app_redirect.dart';
 import 'package:centavo/core/router/app_shell.dart';
 import 'package:centavo/core/router/routes.dart';
+import 'package:centavo/features/backup/presentation/backup_screen.dart';
+import 'package:centavo/features/backup/presentation/sign_in_screen.dart';
+import 'package:centavo/features/backup/presentation/verify_screen.dart';
 import 'package:centavo/features/budgets/presentation/budget_form_screen.dart';
 import 'package:centavo/features/budgets/presentation/budgets_screen.dart';
 import 'package:centavo/features/categories/presentation/categories_screen.dart';
@@ -44,6 +48,7 @@ GoRouter appRouter(Ref ref) {
     ..listen(settingsControllerProvider, (_, _) => refresh.value++)
     ..listen(appModeControllerProvider, (_, _) => refresh.value++)
     ..listen(lockControllerProvider, (_, _) => refresh.value++)
+    ..listen(isBackupAvailableProvider, (_, _) => refresh.value++)
     ..onDispose(refresh.dispose);
 
   final router = GoRouter(
@@ -57,6 +62,7 @@ GoRouter appRouter(Ref ref) {
       isLocked: ref.read(lockControllerProvider),
       fullLocation: state.uri.toString(),
       lockFrom: state.uri.queryParameters['from'],
+      isBackupAvailable: ref.read(isBackupAvailableProvider),
     ),
     routes: [
       GoRoute(path: Routes.lock, builder: (_, _) => const LockScreen()),
@@ -156,6 +162,30 @@ GoRouter appRouter(Ref ref) {
                   GoRoute(
                     path: 'export',
                     builder: (_, _) => const ExportScreen(),
+                  ),
+                  GoRoute(
+                    path: 'backup',
+                    builder: (_, _) => const BackupScreen(),
+                    routes: [
+                      // Full screen: also reachable from Welcome (restore).
+                      GoRoute(
+                        path: 'sign-in',
+                        parentNavigatorKey: rootNavigatorKey,
+                        builder: (_, state) => SignInScreen(
+                          fromWelcome:
+                              state.uri.queryParameters['from'] == 'welcome',
+                        ),
+                      ),
+                      GoRoute(
+                        path: 'verify',
+                        parentNavigatorKey: rootNavigatorKey,
+                        builder: (_, state) => VerifyScreen(
+                          email: state.uri.queryParameters['email'] ?? '',
+                          fromWelcome:
+                              state.uri.queryParameters['from'] == 'welcome',
+                        ),
+                      ),
+                    ],
                   ),
                   GoRoute(
                     path: 'about',

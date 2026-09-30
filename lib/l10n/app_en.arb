@@ -292,5 +292,96 @@
         "type": "String"
       }
     }
-  }
+  },
+  "backupTitle": "Backup",
+  "settingsBackup": "Backup",
+  "backupNotSignedIn": "Not signed in",
+  "backupBenefit1": "Keep your data when you change phones",
+  "backupBenefit2": "Your data stays on this device — backup is optional",
+  "backupBenefit3": "Only you can access your backup",
+  "backupSignInAction": "Sign in to back up",
+  "backupSignedInAs": "Signed in as {email}",
+  "@backupSignedInAs": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLastBackup": "Last backup: {date}",
+  "@backupLastBackup": {
+    "placeholders": {
+      "date": {
+        "type": "String"
+      }
+    }
+  },
+  "backupLastBackupNever": "Last backup: never",
+  "backupJustNow": "just now",
+  "backupNow": "Back up now",
+  "backupStepPreparing": "Preparing…",
+  "backupStepCategories": "Uploading categories…",
+  "backupStepBudgets": "Uploading budgets…",
+  "backupStepTransactions": "Uploading transactions…",
+  "backupAutomatic": "Automatic backup",
+  "backupAutomaticSubtitle": "When you open the app, at most once a day",
+  "backupRestore": "Restore from backup",
+  "backupRestoreConfirmTitle": "Restore from backup?",
+  "backupRestoreConfirmMessage": "Restore merges your backup into this device. Nothing on this device is deleted.",
+  "backupRestoreConfirm": "Restore",
+  "backupRestored": "Restored {transactions} transactions, {categories} categories and {budgets} budgets.",
+  "@backupRestored": {
+    "placeholders": {
+      "transactions": {
+        "type": "String"
+      },
+      "categories": {
+        "type": "String"
+      },
+      "budgets": {
+        "type": "String"
+      }
+    }
+  },
+  "backupDone": "Backup complete",
+  "backupDelete": "Delete my backup",
+  "backupDeleteConfirmTitle": "Delete your backup?",
+  "backupDeleteConfirmMessage": "This removes your backed-up data from the cloud. Data on this device is not affected.",
+  "backupDeleteFinalTitle": "Delete backup permanently?",
+  "backupDeleteFinalMessage": "This cannot be undone. You can back up again at any time.",
+  "backupDeleteConfirm": "Delete backup",
+  "backupDeleted": "Backup deleted",
+  "backupSignOut": "Sign out",
+  "backupSignOutConfirmTitle": "Sign out?",
+  "backupSignOutConfirmMessage": "Your data stays on this device.",
+  "signInTitle": "Sign in",
+  "signInSubtitle": "Enter your email and we'll send you a 6-digit code. No password needed.",
+  "signInEmailLabel": "Email",
+  "signInSendCode": "Send code",
+  "verifyTitle": "Enter your code",
+  "verifyMessage": "We sent a 6-digit code to {email}",
+  "@verifyMessage": {
+    "placeholders": {
+      "email": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyCodeLabel": "6-digit code",
+  "verifyDemoHint": "Demo code: 123456",
+  "verifyAction": "Verify",
+  "verifyResend": "Resend code",
+  "verifyResendIn": "Resend code in {seconds}s",
+  "@verifyResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "String"
+      }
+    }
+  },
+  "verifyCodeSent": "A new code is on its way",
+  "restoringTitle": "Restoring your data…",
+  "noBackupFoundTitle": "No backup found",
+  "noBackupFoundMessage": "This account has no backup yet. You can start fresh instead.",
+  "restoreFromBackup": "Restore from backup"
 }

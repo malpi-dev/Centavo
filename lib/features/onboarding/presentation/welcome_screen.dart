@@ -1,4 +1,5 @@
 import 'package:centavo/core/di/app_mode_provider.dart';
+import 'package:centavo/core/di/repository_providers.dart';
 import 'package:centavo/core/presentation/l10n_extension.dart';
 import 'package:centavo/core/router/routes.dart';
 import 'package:flutter/material.dart';
@@ -50,6 +51,19 @@ class WelcomeScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(height: 12),
+                if (ref.watch(isBackupAvailableProvider)) ...[
+                  Semantics(
+                    identifier: 'welcome-restore',
+                    child: OutlinedButton(
+                      key: const Key('welcome-restore'),
+                      onPressed: () => context.push(
+                        '${Routes.backupSignIn}?from=welcome',
+                      ),
+                      child: Text(l10n.restoreFromBackup),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                ],
                 Semantics(
                   identifier: 'welcome-explore-demo',
                   child: OutlinedButton(

@@ -192,5 +192,105 @@ void runTransactionRepositoryContract(
       await repo.softDelete(t.id);
       await expectation;
     });
+
+    group('backup sync', () {
+      final t0 = DateTime.utc(2026, 10, 1, 8);
+      final t1 = t0.add(const Duration(milliseconds: 1));
+      final later = DateTime.utc(2026, 10, 2);
+
+      test(
+        'changedSince(null) returns deleted rows too, oldest first',
+        () async {
+          await repo.mergeFromBackup([
+            aTransaction(categoryId: 'exp', id: 'b', updatedAt: t1),
+            aTransaction(categoryId: 'exp', id: 'a', updatedAt: t0),
+            aTransaction(
+              categoryId: 'exp',
+              id: 'c',
+              updatedAt: later,
+              deletedAt: later,
+            ),
+          ]);
+          expect((await repo.changedSince(null)).map((t) => t.id), [
+            'a',
+            'b',
+            'c',
+          ]);
+        },
+      );
+
+      test('changedSince is strict and keeps millisecond precision', () async {
+        await repo.mergeFromBackup([
+          aTransaction(categoryId: 'exp', id: 'a', updatedAt: t0),
+          aTransaction(categoryId: 'exp', id: 'b', updatedAt: t1),
+        ]);
+        expect((await repo.changedSince(t0)).map((t) => t.id), ['b']);
+        expect(await repo.changedSince(t1), isEmpty);
+      });
+
+      test('inserts unknown rows keeping their dates', () async {
+        await repo.mergeFromBackup([
+          aTransaction(
+            categoryId: 'exp',
+            id: 'a',
+            createdAt: t0,
+            updatedAt: later,
+          ),
+        ]);
+        final stored = (await repo.changedSince(null)).single;
+        expect(stored.createdAt, t0);
+        expect(stored.updatedAt, later);
+        expect(stored.occurredOn, LocalDate(2026, 10, 5));
+      });
+
+      test('last write wins by id', () async {
+        await repo.mergeFromBackup([
+          aTransaction(
+            categoryId: 'exp',
+            id: 'a',
+            amountMinor: 100,
+            updatedAt: t0,
+          ),
+          aTransaction(
+            categoryId: 'exp',
+            id: 'b',
+            amountMinor: 100,
+            updatedAt: later,
+          ),
+        ]);
+        await repo.mergeFromBackup([
+          aTransaction(
+            categoryId: 'exp',
+            id: 'a',
+            amountMinor: 200,
+            updatedAt: later,
+          ),
+          aTransaction(
+            categoryId: 'exp',
+            id: 'b',
+            amountMinor: 999,
+            updatedAt: t0,
+          ),
+        ]);
+        final byId = {for (final t in await repo.changedSince(null)) t.id: t};
+        expect(byId['a']!.amountMinor, 200);
+        expect(byId['b']!.amountMinor, 100);
+      });
+
+      test('a newer tombstone deletes and never touches other rows', () async {
+        final local = await repo.create(draft());
+        await repo.mergeFromBackup([
+          aTransaction(categoryId: 'exp', id: 'a', updatedAt: t0),
+          aTransaction(
+            categoryId: 'exp',
+            id: 'a',
+            updatedAt: later,
+            deletedAt: later,
+          ),
+        ]);
+        expect(await repo.findById('a'), isNull);
+        expect(await repo.findById(local.id), isNotNull);
+      });
+    });
   });
 }

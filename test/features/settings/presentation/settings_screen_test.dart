@@ -143,4 +143,25 @@ void main() {
     expect(find.byKey(const Key('settings-erase')), findsNothing);
     expect(find.byKey(const Key('settings-exit-demo')), findsOneWidget);
   });
+
+  testCentavo('the Backup row is hidden without a backup configuration', (
+    tester,
+  ) async {
+    await pumpCentavo(tester, settings: _onboarded, backupAvailable: false);
+    await _openSettings(tester);
+    expect(find.byKey(const Key('settings-backup')), findsNothing);
+  });
+
+  testCentavo('the Backup row shows its state and opens the screen', (
+    tester,
+  ) async {
+    await pumpCentavo(tester, settings: _onboarded, backupAvailable: true);
+    await _openSettings(tester);
+    expect(find.byKey(const Key('settings-backup')), findsOneWidget);
+    expect(find.text('Not signed in'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('settings-backup')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const Key('backup-sign-in')), findsOneWidget);
+  });
 }

@@ -141,5 +141,99 @@ void runBudgetRepositoryContract(
         expect(await repo.getMonth(oct), [b]);
       },
     );
+
+    group('backup sync', () {
+      final t0 = DateTime.utc(2026, 10, 1, 8);
+      final t1 = t0.add(const Duration(milliseconds: 1));
+      final later = DateTime.utc(2026, 10, 2);
+
+      test('changedSince includes deleted rows, ordered, strict', () async {
+        await repo.mergeFromBackup([
+          aBudget(categoryId: 'exp', id: 'a', updatedAt: t0),
+          aBudget(categoryId: 'exp', id: 'b', month: nov, updatedAt: t1),
+          aBudget(
+            id: 'c',
+            categoryId: 'exp2',
+            updatedAt: later,
+            deletedAt: later,
+          ),
+        ]);
+        expect((await repo.changedSince(null)).map((b) => b.id), [
+          'a',
+          'b',
+          'c',
+        ]);
+        expect((await repo.changedSince(t0)).map((b) => b.id), ['b', 'c']);
+      });
+
+      test('last write wins by id', () async {
+        await repo.mergeFromBackup([
+          aBudget(categoryId: 'exp', id: 'a', limitMinor: 100, updatedAt: t0),
+          aBudget(
+            categoryId: 'exp',
+            id: 'b',
+            month: nov,
+            limitMinor: 100,
+            updatedAt: later,
+          ),
+        ]);
+        await repo.mergeFromBackup([
+          aBudget(
+            categoryId: 'exp',
+            id: 'a',
+            limitMinor: 200,
+            updatedAt: later,
+          ),
+          aBudget(
+            categoryId: 'exp',
+            id: 'b',
+            month: nov,
+            limitMinor: 999,
+            updatedAt: t0,
+          ),
+        ]);
+        final byId = {for (final b in await repo.changedSince(null)) b.id: b};
+        expect(byId['a']!.limitMinor, 200);
+        expect(byId['b']!.limitMinor, 100);
+      });
+
+      test(
+        'a newer incoming budget replaces the local one of the same month',
+        () async {
+          await repo.mergeFromBackup([
+            aBudget(categoryId: 'exp', id: 'local', updatedAt: t0),
+          ]);
+          await repo.mergeFromBackup([
+            aBudget(
+              categoryId: 'exp',
+              id: 'cloud',
+              limitMinor: 555,
+              updatedAt: later,
+            ),
+          ]);
+          final active = await repo.getMonth(oct);
+          expect(active.map((b) => b.id), ['cloud']);
+          final local = (await repo.changedSince(null)).firstWhere(
+            (b) => b.id == 'local',
+          );
+          expect(local.deletedAt, clock.nowUtc());
+          expect(local.updatedAt, clock.nowUtc());
+        },
+      );
+
+      test('an older incoming budget is stored as a tombstone', () async {
+        await repo.mergeFromBackup([
+          aBudget(categoryId: 'exp', id: 'local', updatedAt: later),
+        ]);
+        await repo.mergeFromBackup([
+          aBudget(categoryId: 'exp', id: 'cloud', updatedAt: t0),
+        ]);
+        expect((await repo.getMonth(oct)).map((b) => b.id), ['local']);
+        final cloud = (await repo.changedSince(null)).firstWhere(
+          (b) => b.id == 'cloud',
+        );
+        expect(cloud.deletedAt, clock.nowUtc());
+      });
+    });
   });
 }

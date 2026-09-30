@@ -32,4 +32,12 @@ abstract interface class TransactionRepository {
 
   /// Count of non-deleted transactions in a category.
   Future<int> countByCategory(String categoryId);
+
+  /// Rows with updatedAt > [sinceUtc] (all rows when null), INCLUDING
+  /// archived and deleted ones, ordered by updatedAt.
+  Future<List<MoneyTransaction>> changedSince(DateTime? sinceUtc);
+
+  /// Merges rows downloaded from the backup (last-write-wins by id). Never
+  /// deletes local rows that are not in [incoming].
+  Future<void> mergeFromBackup(List<MoneyTransaction> incoming);
 }

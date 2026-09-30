@@ -197,4 +197,51 @@ class DriftCategoryRepository implements CategoryRepository {
           );
         });
       }, entity: _entity);
+
+  @override
+  Future<List<Category>> changedSince(DateTime? sinceUtc) =>
+      guardStorage(() async {
+        final query = _db.select(_table)
+          ..orderBy([
+            (c) => OrderingTerm.asc(c.updatedAt),
+            (c) => OrderingTerm.asc(c.id),
+          ]);
+        if (sinceUtc != null) {
+          query.where((c) => c.updatedAt.isBiggerThanValue(sinceUtc));
+        }
+        return (await query.get()).map((r) => r.toDomain()).toList();
+      }, entity: _entity);
+
+  @override
+  Future<void> mergeFromBackup(List<Category> incoming) =>
+      guardStorage(() async {
+        for (final row in incoming) {
+          final local = await (_db.select(
+            _table,
+          )..where((c) => c.id.equals(row.id))).getSingleOrNull();
+          if (local != null && !local.updatedAt.isBefore(row.updatedAt)) {
+            continue;
+          }
+          var toWrite = row;
+          if (row.isActive) {
+            final others =
+                await (_db.select(_table)..where(
+                      (c) =>
+                          c.type.equalsValue(row.type) &
+                          c.archivedAt.isNull() &
+                          c.deletedAt.isNull() &
+                          c.id.equals(row.id).not(),
+                    ))
+                    .get();
+            final taken = {for (final c in others) c.name.toLowerCase()};
+            toWrite = row.copyWith(
+              name: disambiguateCategoryName(
+                row.name,
+                (candidate) => taken.contains(candidate.toLowerCase()),
+              ),
+            );
+          }
+          await _db.into(_table).insertOnConflictUpdate(toWrite.toCompanion());
+        }
+      }, entity: _entity);
 }
