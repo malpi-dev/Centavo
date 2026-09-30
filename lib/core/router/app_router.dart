@@ -1,8 +1,10 @@
 import 'package:centavo/core/di/app_mode_provider.dart';
 import 'package:centavo/core/domain/transaction_type.dart';
+import 'package:centavo/core/domain/year_month.dart';
 import 'package:centavo/core/router/app_redirect.dart';
 import 'package:centavo/core/router/app_shell.dart';
 import 'package:centavo/core/router/routes.dart';
+import 'package:centavo/features/budgets/presentation/budget_form_screen.dart';
 import 'package:centavo/features/budgets/presentation/budgets_screen.dart';
 import 'package:centavo/features/categories/presentation/categories_screen.dart';
 import 'package:centavo/features/categories/presentation/category_form_screen.dart';
@@ -20,6 +22,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'app_router.g.dart';
 
 final rootNavigatorKey = GlobalKey<NavigatorState>();
+
+/// Null when [value] is missing or malformed (the form then shows "not found").
+YearMonth? _tryParseMonth(String? value) {
+  if (value == null) return null;
+  try {
+    return YearMonth.parse(value);
+  } on FormatException {
+    return null;
+  }
+}
 
 @Riverpod(keepAlive: true)
 GoRouter appRouter(Ref ref) {
@@ -93,6 +105,16 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: Routes.budgets,
                 builder: (_, _) => const BudgetsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'edit',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (_, state) => BudgetFormScreen(
+                      categoryId: state.uri.queryParameters['category'] ?? '',
+                      month: _tryParseMonth(state.uri.queryParameters['month']),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

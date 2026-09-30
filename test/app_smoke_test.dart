@@ -5,7 +5,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'helpers/pump_centavo.dart';
 
 void main() {
-  testWidgets('welcome, then Start fresh reveals the tab bar', (tester) async {
+  testCentavo('welcome, then Start fresh reveals the tab bar', (tester) async {
     await pumpCentavo(tester);
     expect(find.text('Start fresh'), findsOneWidget);
 
@@ -25,7 +25,7 @@ void main() {
     }
     await tester.tap(find.byKey(const Key('tab-budgets')));
     await tester.pumpAndSettle();
-    expect(find.text('Coming soon'), findsOneWidget);
+    expect(find.byKey(const Key('budgets-not-budgeted')), findsOneWidget);
   });
 
   testWidgets('onboarded users land on the dashboard', (tester) async {

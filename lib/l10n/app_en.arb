@@ -101,5 +101,67 @@
   "createCategory": "Create category",
   "deleteTransactionTitle": "Delete transaction?",
   "transactionDeleted": "Transaction deleted",
-  "addTransaction": "Add transaction"
+  "addTransaction": "Add transaction",
+  "budgetsTitle": "Budgets",
+  "spentOfLimit": "Spent {spent} of {limit}",
+  "@spentOfLimit": {
+    "placeholders": {
+      "spent": {"type": "String"},
+      "limit": {"type": "String"}
+    }
+  },
+  "lineSpentOfLimit": "{spent} of {limit}",
+  "@lineSpentOfLimit": {
+    "placeholders": {
+      "spent": {"type": "String"},
+      "limit": {"type": "String"}
+    }
+  },
+  "leftAmount": "{amount} left",
+  "@leftAmount": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "overBy": "Over by {amount}",
+  "@overBy": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "statusOnTrack": "On track",
+  "statusWarning": "Near limit",
+  "statusExceeded": "Over budget",
+  "unbudgetedSpending": "Unbudgeted spending: {amount}",
+  "@unbudgetedSpending": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "notBudgeted": "Not budgeted",
+  "setBudget": "Set budget",
+  "setABudget": "Set a budget",
+  "noBudgetsInMonth": "No budgets for {month}",
+  "@noBudgetsInMonth": {
+    "placeholders": {
+      "month": {"type": "String"}
+    }
+  },
+  "copyFromPreviousMonth": "Copy from previous month",
+  "copiedBudgets": "{count, plural, =1{Copied 1 budget} other{Copied {count} budgets}}",
+  "@copiedBudgets": {
+    "placeholders": {
+      "count": {"type": "int"}
+    }
+  },
+  "monthlyLimit": "Monthly limit",
+  "spentSoFar": "Spent so far: {amount}",
+  "@spentSoFar": {
+    "placeholders": {
+      "amount": {"type": "String"}
+    }
+  },
+  "removeBudget": "Remove budget",
+  "removeBudgetTitle": "Remove this budget?",
+  "budgetRemoved": "Budget removed"
 }
