@@ -405,7 +405,6 @@ class _CategoryPicker extends ConsumerWidget {
                   avatar: CategoryAvatar(
                     icon: c.icon,
                     color: c.color,
-                    label: c.name,
                     size: 24,
                   ),
                   label: Text(c.name),

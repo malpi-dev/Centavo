@@ -1,0 +1,28 @@
+appId: com.malpidev.centavo
+name: Demo - add an expense and see the dashboard update
+---
+- clearState
+- launchApp
+- tapOn:
+    id: "welcome-explore-demo"
+- assertVisible: "Demo mode — changes aren't saved"
+- copyTextFrom:
+    id: "dashboard-expense"
+- evalScript: ${output.before = parseFloat(maestro.copiedText.replace(/[^0-9.]/g, ''))}
+- tapOn:
+    id: "fab-add-transaction"
+- tapOn:
+    id: "tx-amount"
+- inputText: "12.50"
+- hideKeyboard
+- tapOn:
+    id: "tx-category-coffee"
+- tapOn:
+    id: "tx-save"
+- assertVisible:
+    id: "dashboard-expense"
+- copyTextFrom:
+    id: "dashboard-expense"
+- assertTrue: ${Math.abs(parseFloat(maestro.copiedText.replace(/[^0-9.]/g, '')) - output.before - 12.5) < 0.001}
+- tapOn: "Transactions.*"
+- assertVisible: ".*12\\.50.*"

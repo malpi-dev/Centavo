@@ -50,11 +50,14 @@ class _CurrencyScreenState extends ConsumerState<CurrencyScreen> {
               child: ListView(
                 children: [
                   for (final c in supportedCurrencies)
-                    RadioListTile<String>(
-                      key: Key('currency-${c.code}'),
-                      value: c.code,
-                      title: Text(c.name),
-                      subtitle: Text(c.code),
+                    Semantics(
+                      identifier: 'currency-${c.code}',
+                      child: RadioListTile<String>(
+                        key: Key('currency-${c.code}'),
+                        value: c.code,
+                        title: Text(c.name),
+                        subtitle: Text(c.code),
+                      ),
                     ),
                 ],
               ),
