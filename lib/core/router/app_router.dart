@@ -11,6 +11,7 @@ import 'package:centavo/features/onboarding/presentation/currency_screen.dart';
 import 'package:centavo/features/onboarding/presentation/welcome_screen.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
 import 'package:centavo/features/settings/presentation/settings_screen.dart';
+import 'package:centavo/features/transactions/presentation/transaction_form_screen.dart';
 import 'package:centavo/features/transactions/presentation/transactions_screen.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
@@ -64,6 +65,26 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: Routes.transactions,
                 builder: (_, _) => const TransactionsScreen(),
+                routes: [
+                  // Full screen (no bottom bar). `new` before `:id`.
+                  GoRoute(
+                    path: 'new',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (_, state) => TransactionFormScreen(
+                      initialType:
+                          TransactionType.values
+                              .asNameMap()[state.uri.queryParameters['type']] ??
+                          TransactionType.expense,
+                    ),
+                  ),
+                  GoRoute(
+                    path: ':id',
+                    parentNavigatorKey: rootNavigatorKey,
+                    builder: (_, state) => TransactionFormScreen(
+                      transactionId: state.pathParameters['id'],
+                    ),
+                  ),
+                ],
               ),
             ],
           ),

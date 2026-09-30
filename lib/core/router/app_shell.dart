@@ -1,4 +1,5 @@
 import 'package:centavo/core/presentation/l10n_extension.dart';
+import 'package:centavo/core/router/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -12,6 +13,19 @@ class AppShell extends StatelessWidget {
     final l10n = context.l10n;
     return Scaffold(
       body: navigationShell,
+      // Dashboard, Transactions and Budgets only (not Settings).
+      floatingActionButton: navigationShell.currentIndex <= 2
+          ? Semantics(
+              identifier: 'fab-add-transaction',
+              child: FloatingActionButton(
+                key: const Key('fab-add-transaction'),
+                tooltip: l10n.addTransaction,
+                onPressed: () =>
+                    context.push('${Routes.transactionNew}?type=expense'),
+                child: const Icon(Icons.add),
+              ),
+            )
+          : null,
       bottomNavigationBar: NavigationBar(
         selectedIndex: navigationShell.currentIndex,
         onDestinationSelected: (i) => navigationShell.goBranch(

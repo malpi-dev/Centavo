@@ -7,6 +7,7 @@ import 'package:centavo/core/presentation/category_icons.dart';
 import 'package:centavo/core/presentation/empty_state.dart';
 import 'package:centavo/core/presentation/error_messages.dart';
 import 'package:centavo/core/presentation/l10n_extension.dart';
+import 'package:centavo/core/presentation/root_scaffold_messenger.dart';
 import 'package:centavo/core/theme/centavo_colors.dart';
 import 'package:centavo/features/categories/domain/category.dart';
 import 'package:centavo/features/categories/domain/category_validator.dart';
@@ -102,9 +103,9 @@ class _CategoryFormState extends ConsumerState<_CategoryForm> {
       case DuplicateError():
         setState(() => _duplicateName = l10n.errorDuplicate);
       default:
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(messageFor(error, l10n))));
+        rootScaffoldMessengerKey.currentState?.showSnackBar(
+          SnackBar(content: Text(messageFor(error, l10n))),
+        );
     }
   }
 
@@ -157,9 +158,10 @@ class _CategoryFormState extends ConsumerState<_CategoryForm> {
     final message = category.isArchived
         ? l10n.categoryUnarchived
         : l10n.categoryArchived;
-    final messenger = ScaffoldMessenger.of(context);
     context.pop();
-    messenger.showSnackBar(SnackBar(content: Text(message)));
+    rootScaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   Future<void> _delete(Category category) async {
@@ -191,9 +193,10 @@ class _CategoryFormState extends ConsumerState<_CategoryForm> {
       CategoryRemoval.deleted => l10n.categoryDeleted,
       CategoryRemoval.archived => l10n.categoryArchivedInUse,
     };
-    final messenger = ScaffoldMessenger.of(context);
     context.pop();
-    messenger.showSnackBar(SnackBar(content: Text(message)));
+    rootScaffoldMessengerKey.currentState?.showSnackBar(
+      SnackBar(content: Text(message)),
+    );
   }
 
   @override
