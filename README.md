@@ -1,3 +1,5 @@
-# centavo
+# Centavo
 
-A new Flutter project.
+*Your money, on your phone. No account needed.*
+
+🚧 Work in progress
