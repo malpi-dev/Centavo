@@ -62,7 +62,12 @@ class _LockScreenState extends ConsumerState<LockScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.lock_outline, size: 64, color: foreground),
+                  Image.asset(
+                    'assets/icon/splash_logo.png',
+                    height: 72,
+                    width: 72,
+                    excludeFromSemantics: true,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     l10n.lockTitle,

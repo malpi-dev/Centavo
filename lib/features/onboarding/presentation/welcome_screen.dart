@@ -22,10 +22,11 @@ class WelcomeScreen extends ConsumerWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Icon(
-                  Icons.savings,
-                  size: 96,
-                  color: theme.colorScheme.primary,
+                Image.asset(
+                  'assets/icon/splash_logo.png',
+                  height: 96,
+                  width: 96,
+                  excludeFromSemantics: true,
                 ),
                 const SizedBox(height: 24),
                 Text(
