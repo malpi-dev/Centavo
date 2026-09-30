@@ -1,0 +1,15 @@
+targets:
+  $default:
+    builders:
+      drift_dev:
+        options:
+          # ISO-8601 text keeps millisecond precision (needed for last-write-wins) and sorts correctly in UTC.
+          store_date_time_values_as_text: true
+          databases:
+            centavo: lib/core/database/app_database.dart
+          schema_dir: drift_schemas/
+          test_dir: test/drift/
+      json_serializable:
+        options:
+          field_rename: snake
+          explicit_to_json: true
