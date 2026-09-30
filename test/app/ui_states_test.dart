@@ -31,7 +31,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 
-import '../helpers/builders.dart';
 import '../helpers/pump_app.dart';
 import '../helpers/pump_centavo.dart';
 import '../helpers/test_overrides.dart';
@@ -114,9 +113,11 @@ void main() {
           ),
         ],
       );
-      app.container
-          .read(appRouterProvider)
-          .push(Routes.transactionEdit('tx-1'));
+      unawaited(
+        app.container
+            .read(appRouterProvider)
+            .push(Routes.transactionEdit('tx-1')),
+      );
       await tester.pump();
       await tester.pump();
       expect(find.byType(CircularProgressIndicator), findsOneWidget);
