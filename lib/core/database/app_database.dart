@@ -3,7 +3,9 @@ import 'package:centavo/core/database/tables/budgets_table.dart';
 import 'package:centavo/core/database/tables/categories_table.dart';
 import 'package:centavo/core/database/tables/sync_state_table.dart';
 import 'package:centavo/core/database/tables/transactions_table.dart';
+import 'package:centavo/core/domain/local_date.dart';
 import 'package:centavo/core/domain/transaction_type.dart';
+import 'package:centavo/core/domain/year_month.dart';
 import 'package:drift/drift.dart';
 import 'package:drift_flutter/drift_flutter.dart';
 
