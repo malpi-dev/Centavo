@@ -36,9 +36,12 @@ class CentavoApp extends ConsumerWidget {
       builder: (context, child) {
         final isDemo = ref.watch(appModeControllerProvider) == AppMode.demo;
         if (!isDemo) return child!;
+        // Bottom-up layout keeps the banner on top but paints it after the
+        // Navigator: an opaque route blocks the semantics of nodes painted
+        // before it, which would hide the banner from TalkBack and Maestro.
         return Column(
+          verticalDirection: VerticalDirection.up,
           children: [
-            const DemoBanner(),
             Expanded(
               child: MediaQuery.removePadding(
                 context: context,
@@ -46,6 +49,7 @@ class CentavoApp extends ConsumerWidget {
                 child: child!,
               ),
             ),
+            const DemoBanner(),
           ],
         );
       },

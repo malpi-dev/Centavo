@@ -165,7 +165,12 @@ class _FilterRow extends ConsumerWidget {
             for (final c in options)
               ListTile(
                 key: Key('filter-category-${c.id}'),
-                leading: CategoryAvatar(icon: c.icon, color: c.color, size: 32),
+                leading: CategoryAvatar(
+                  icon: c.icon,
+                  color: c.color,
+                  label: c.name,
+                  size: 32,
+                ),
                 title: Text(c.name),
                 onTap: () {
                   controller.setCategory(c.id);
@@ -275,7 +280,11 @@ class _TransactionRow extends ConsumerWidget {
         return false;
       },
       child: ListTile(
-        leading: CategoryAvatar(icon: category?.icon, color: category?.color),
+        leading: CategoryAvatar(
+          icon: category?.icon,
+          color: category?.color,
+          label: category?.name,
+        ),
         title: Text(category?.name ?? l10n.unknownCategory),
         subtitle: tx.note == null
             ? null

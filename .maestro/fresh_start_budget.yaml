@@ -1,0 +1,35 @@
+appId: com.malpidev.centavo
+name: Fresh start - set a budget and spend against it
+---
+- clearState
+- launchApp
+- tapOn:
+    id: "welcome-start-fresh"
+- tapOn:
+    id: "currency-USD"
+- tapOn:
+    id: "currency-continue"
+- assertVisible: "Dashboard"
+- tapOn: "Budgets.*"
+- tapOn:
+    id: "budget-set-00000000-0000-4000-8000-000000000001"
+- tapOn:
+    id: "budget-limit"
+- inputText: "600"
+- hideKeyboard
+- tapOn:
+    id: "budget-save"
+- assertVisible: ".*600\\.00.*"
+- tapOn:
+    id: "fab-add-transaction"
+- tapOn:
+    id: "tx-amount"
+- inputText: "50"
+- hideKeyboard
+- tapOn:
+    id: "tx-category-food"
+- tapOn:
+    id: "tx-save"
+- tapOn: "Budgets.*"
+- assertVisible: ".*50\\.00 of .*600\\.00.*"
+- assertVisible: ".*On track.*"

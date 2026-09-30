@@ -125,6 +125,7 @@ class _BudgetRow extends StatelessWidget {
           CategoryAvatar(
             icon: line.category.icon,
             color: line.category.color,
+            label: line.category.name,
             size: 32,
           ),
           const SizedBox(width: 12),

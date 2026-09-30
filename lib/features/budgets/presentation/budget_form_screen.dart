@@ -212,7 +212,11 @@ class _BudgetFormState extends ConsumerState<_BudgetForm> {
           children: [
             Row(
               children: [
-                CategoryAvatar(icon: category.icon, color: category.color),
+                CategoryAvatar(
+                  icon: category.icon,
+                  color: category.color,
+                  label: category.name,
+                ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(

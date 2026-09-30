@@ -319,6 +319,7 @@ class _CategoryFormState extends ConsumerState<_CategoryForm> {
                 for (var i = 0; i < categoryColorPalette.length; i++)
                   _ColorChoice(
                     key: Key('category-color-$i'),
+                    label: l10n.categoryColorOption(i + 1),
                     color: categoryColorPalette[i],
                     selected: categoryColorPalette[i] == _color,
                     onTap: () =>
@@ -363,22 +364,29 @@ class _IconChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        width: 48,
-        height: 48,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: selected ? scheme.primaryContainer : null,
-          border: Border.all(
-            color: selected ? scheme.primary : scheme.outlineVariant,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: iconKey,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: selected ? scheme.primaryContainer : null,
+            border: Border.all(
+              color: selected ? scheme.primary : scheme.outlineVariant,
+            ),
           ),
-        ),
-        child: Icon(
-          categoryIcon(iconKey),
-          color: selected ? scheme.onPrimaryContainer : scheme.onSurfaceVariant,
+          child: Icon(
+            categoryIcon(iconKey),
+            color: selected
+                ? scheme.onPrimaryContainer
+                : scheme.onSurfaceVariant,
+          ),
         ),
       ),
     );
@@ -387,12 +395,14 @@ class _IconChoice extends StatelessWidget {
 
 class _ColorChoice extends StatelessWidget {
   const _ColorChoice({
+    required this.label,
     required this.color,
     required this.selected,
     required this.onTap,
     super.key,
   });
 
+  final String label;
   final int color;
   final bool selected;
   final VoidCallback onTap;
@@ -400,16 +410,34 @@ class _ColorChoice extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resolved = context.colors.category(color);
-    return InkWell(
-      onTap: onTap,
-      customBorder: const CircleBorder(),
-      child: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: resolved),
-        child: selected
-            ? const Icon(Icons.check, color: Colors.white, size: 22)
-            : null,
+    return Semantics(
+      button: true,
+      selected: selected,
+      label: label,
+      child: InkWell(
+        onTap: onTap,
+        customBorder: const CircleBorder(),
+        child: SizedBox(
+          width: 48,
+          height: 48,
+          child: Center(
+            child: Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: resolved,
+              ),
+              child: selected
+                  ? Icon(
+                      Icons.check,
+                      color: context.colors.onCategory,
+                      size: 22,
+                    )
+                  : null,
+            ),
+          ),
+        ),
       ),
     );
   }

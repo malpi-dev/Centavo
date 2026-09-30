@@ -62,7 +62,12 @@ class _LockScreenState extends ConsumerState<LockScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.lock_outline, size: 64, color: foreground),
+                  Image.asset(
+                    'assets/icon/splash_logo.png',
+                    height: 72,
+                    width: 72,
+                    excludeFromSemantics: true,
+                  ),
                   const SizedBox(height: 16),
                   Text(
                     l10n.lockTitle,
@@ -85,6 +90,18 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                       child: Text(l10n.lockUnlock),
                     ),
                   ),
+                  if (_busy) ...[
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        key: const Key('lock-waiting'),
+                        strokeWidth: 2,
+                        color: foreground,
+                      ),
+                    ),
+                  ],
                   if (_error != null) ...[
                     const SizedBox(height: 16),
                     Text(
