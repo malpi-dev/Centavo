@@ -5,9 +5,9 @@
 
 ## Avance
 
-`██████████▒░░░` 10/14 fases terminadas (71 %)
+`███████████░░░` 11/14 fases terminadas (79 %)
 
-**Fase actual:** Fase 11 · Backend Supabase (🚧 en progreso)
+**Fase actual:** ninguna — la siguiente es la Fase 12 · Respaldo
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -25,7 +25,7 @@
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 11 | Backend Supabase | `feat/fase-11-backend-supabase` | 🚧 En progreso | 2026-09-29 | — |
+| 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ⏳ Pendiente | — | — |
 | 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | ⏳ Pendiente | — | — |
 | 14 | Lanzamiento | `feat/fase-14-lanzamiento` | ⏳ Pendiente | — | — |
@@ -61,6 +61,13 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 11 · Backend Supabase — 2026-09-29
+- **Hecho:** `supabase init` + `config.toml` (project_id `centavo`, schema `centavo` expuesto, confirmaciones y OTP de 6 dígitos, `email_sent = 30` solo local, plantillas `confirmation`/`magic_link` con `{{ .Token }}` en `supabase/templates/otp.html`); migración `20260928000000_centavo_init.sql` (tablas, índices, triggers LWW/`synced_at`/tipo de categoría, `ensure_profile(p_currency_code)`, grants, RLS en las 4 tablas con 14 políticas comentadas); `seed.sql` local (usuario demo `demo@centavo.test`, 13 categorías, 133 movimientos hoy, 15 presupuestos; replica el patrón de la fase 05); pgTAP `rls_test.sql` (18) y `triggers_test.sql` (14); job `database` en CI; `.env.json` local (ignorado por git).
+- **Verificación:** `supabase db reset` sin errores; `supabase test db` PASS (32 tests); `./tool/check.sh` pasa (355 tests); `curl` con la publishable key sobre `centavo/categories` responde `42501` (anon sin acceso).
+- **PR:** ver historial de GitHub (`feat: phase 11 - supabase backend`).
+- **Decisiones:** ver tabla de desviaciones. Se detuvo Agendo local (`supabase stop`) por conflicto de puertos; Supabase de Centavo queda corriendo.
+- **Pendientes:** el resultado del job `database` en CI se valida en el PR; la fase 12 usa este backend local (emulador: `http://10.0.2.2:54321`).
 
 ### Fase 10 · Ajustes, bloqueo y CSV — 2026-09-29
 - **Hecho:** dominio/datos de `security` (`BiometricRepository` con `LocalAuthBiometricRepository` + mock, `SecureWindowService` con method channel + noop, `FLAG_SECURE` en `MainActivity.kt`); `LockController` (bloqueo en arranque, tras >= 30 s en segundo plano, `confirmIdentity` para confirmar el activado sin re-bloquear, sincroniza `FLAG_SECURE` con el ajuste); redirect de bloqueo en `appRedirect` (`/lock?from=`) y ruta `/lock`; `LockScreen`; `SettingsScreen` completa (tema, moneda con advertencia, App lock, categorías, exportar, borrar datos con doble confirmación, Exit demo, About); `FileShareCsvService` + `MockCsvShareService`, `ExportScreen`/`ExportController`; `AboutScreen` (versión con `package_info_plus`, URL copiable, licencias, licencias OFL de las fuentes registradas en `main.dart`). Textos l10n. Tests: lock controller, redirect, repositorio biométrico (todos los códigos), servicio CSV, ajustes, borrar datos, exportar y flujo de bloqueo (`./tool/check.sh` pasa, 355 tests).
@@ -206,3 +213,6 @@ _Ninguno._
 ## Ideas para el roadmap (fuera del MVP)
 
 _Anotar aquí; luego pasan a la sección "Roadmap" del README._
+| 2026-09-29 | 11 | `check_category_type` usa `if`/`elsif` anidados por tabla en vez de `and` en una sola condición. | plpgsql no hace cortocircuito: `new.type` fallaba en `budgets` (sin columna `type`). |
+| 2026-09-29 | 11 | En los tests pgTAP, `update`/`delete` con CTE se ejecutan como `with … select is(count(*)…) from cte` de nivel superior. | Postgres no admite CTE con DML dentro de una subconsulta. |
+| 2026-09-29 | 11 | El seed numera los movimientos por mes con `row_number()` (orden por día y regla) para el `createdAt`; los presupuestos usan `gen_random_uuid()`. | SQL puro; los ids no necesitan coincidir con los del demo en Dart. |
