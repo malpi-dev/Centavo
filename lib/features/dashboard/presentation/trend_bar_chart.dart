@@ -36,17 +36,17 @@ class TrendBarChart extends ConsumerWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
             const SizedBox(height: 16),
-            SizedBox(
-              height: 220,
-              child: AsyncStateView<List<MonthTotals>>(
-                value: ref.watch(monthlyTrendProvider(month)),
-                onRetry: () => ref.invalidate(monthlyTrendProvider(month)),
-                loading: const SkeletonBox(
-                  key: Key('dashboard-trend-skeleton'),
-                  height: 220,
-                  radius: 12,
-                ),
-                data: (trend) => _isAllZero(trend)
+            AsyncStateView<List<MonthTotals>>(
+              value: ref.watch(monthlyTrendProvider(month)),
+              onRetry: () => ref.invalidate(monthlyTrendProvider(month)),
+              loading: const SkeletonBox(
+                key: Key('dashboard-trend-skeleton'),
+                height: 220,
+                radius: 12,
+              ),
+              data: (trend) => SizedBox(
+                height: 220,
+                child: _isAllZero(trend)
                     ? Center(
                         child: Text(
                           l10n.notEnoughData,
