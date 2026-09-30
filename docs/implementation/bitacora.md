@@ -5,9 +5,9 @@
 
 ## Avance
 
-`████████████░░` 12/14 fases terminadas (86 %)
+`████████████▒░` 12/14 fases terminadas (86 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 13 · Pulido y E2E
+**Fase actual:** Fase 13 · Pulido y E2E (en progreso)
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -27,7 +27,7 @@
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | ⏳ Pendiente | — | — |
+| 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | 🚧 En progreso | 2026-09-29 | — |
 | 14 | Lanzamiento | `feat/fase-14-lanzamiento` | ⏳ Pendiente | — | — |
 
 Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
