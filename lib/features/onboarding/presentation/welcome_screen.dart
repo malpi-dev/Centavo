@@ -1,3 +1,4 @@
+import 'package:centavo/core/di/app_mode_provider.dart';
 import 'package:centavo/core/presentation/l10n_extension.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,16 @@ class WelcomeScreen extends ConsumerWidget {
                   .read(settingsControllerProvider.notifier)
                   .change((s) => s.copyWith(onboardingCompleted: true)),
               child: Text(l10n.startFresh),
+            ),
+            const SizedBox(height: 12),
+            Semantics(
+              identifier: 'welcome-explore-demo',
+              child: OutlinedButton(
+                key: const Key('welcome-explore-demo'),
+                onPressed: () =>
+                    ref.read(appModeControllerProvider.notifier).enterDemo(),
+                child: Text(l10n.exploreDemo),
+              ),
             ),
           ],
         ),

@@ -1,6 +1,9 @@
+import 'package:centavo/core/di/app_mode_provider.dart';
+import 'package:centavo/core/domain/app_mode.dart';
 import 'package:centavo/core/presentation/l10n_extension.dart';
 import 'package:centavo/core/router/app_router.dart';
 import 'package:centavo/core/theme/app_theme.dart';
+import 'package:centavo/features/demo/presentation/demo_banner.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
 import 'package:centavo/l10n/app_localizations.dart';
@@ -26,6 +29,22 @@ class CentavoApp extends ConsumerWidget {
       },
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
+      builder: (context, child) {
+        final isDemo = ref.watch(appModeControllerProvider) == AppMode.demo;
+        if (!isDemo) return child!;
+        return Column(
+          children: [
+            const DemoBanner(),
+            Expanded(
+              child: MediaQuery.removePadding(
+                context: context,
+                removeTop: true,
+                child: child!,
+              ),
+            ),
+          ],
+        );
+      },
       debugShowCheckedModeBanner: false,
     );
   }

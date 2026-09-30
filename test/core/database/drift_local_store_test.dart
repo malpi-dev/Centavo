@@ -8,8 +8,22 @@ import 'package:flutter_test/flutter_test.dart';
 
 import '../../helpers/sequential_id_generator.dart';
 import '../../helpers/test_database.dart';
+import '../domain/local_store_contract.dart';
 
 void main() {
+  runLocalStoreContract('Drift', () async {
+    final db = createTestDatabase();
+    return LocalStoreHarness(
+      store: DriftLocalStore(db),
+      categories: DriftCategoryRepository(
+        db,
+        clock: FixedClock(DateTime.utc(2026, 10, 15)),
+        ids: SequentialIdGenerator(),
+      ),
+      dispose: db.close,
+    );
+  });
+
   late AppDatabase db;
   late DriftLocalStore store;
   late CategoryRepository categories;
@@ -25,26 +39,6 @@ void main() {
     );
   });
   tearDown(() => db.close());
-
-  test('runInTransaction rolls back when the action throws', () async {
-    await expectLater(
-      store.runInTransaction<void>(() async {
-        await categories.insertIfAbsent(buildDefaultCategories(clock.nowUtc()));
-        throw StateError('boom');
-      }),
-      throwsA(anything),
-    );
-    expect(await categories.getAll(), isEmpty);
-  });
-
-  test('runInTransaction commits and returns the result', () async {
-    final result = await store.runInTransaction(() async {
-      await categories.insertIfAbsent(buildDefaultCategories(clock.nowUtc()));
-      return 42;
-    });
-    expect(result, 42);
-    expect(await categories.getAll(), hasLength(10));
-  });
 
   test('eraseAll empties the four tables', () async {
     await categories.insertIfAbsent(buildDefaultCategories(clock.nowUtc()));

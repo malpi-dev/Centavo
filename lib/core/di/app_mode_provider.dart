@@ -1,3 +1,4 @@
+import 'package:centavo/core/di/repository_providers.dart';
 import 'package:centavo/core/domain/app_mode.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -9,7 +10,18 @@ class AppModeController extends _$AppModeController {
   @override
   AppMode build() => AppMode.local;
 
-  void enterDemo() => state = AppMode.demo;
+  /// Every demo session starts from fresh data and nothing survives it.
+  void enterDemo() {
+    _resetDemo();
+    state = AppMode.demo;
+  }
 
-  void exitDemo() => state = AppMode.local;
+  void exitDemo() {
+    state = AppMode.local;
+    _resetDemo();
+  }
+
+  void _resetDemo() => ref
+    ..invalidate(demoDataStoreProvider)
+    ..invalidate(demoSettingsRepositoryProvider);
 }
