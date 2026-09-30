@@ -14,12 +14,17 @@ String? appRedirect({
   bool isLocked = false,
   String? fullLocation,
   String? lockFrom,
+  bool isBackupAvailable = true,
 }) {
   final onboarded = mode == AppMode.demo || settings.onboardingCompleted;
   final inWelcome = location.startsWith(Routes.welcome);
   final inRestoreAuth =
       location.startsWith(Routes.backupSignIn) ||
       location.startsWith(Routes.backupVerify);
+  // Without a Supabase configuration the backup module is hidden.
+  if (!isBackupAvailable && location.startsWith(Routes.backup)) {
+    return onboarded ? Routes.settings : Routes.welcome;
+  }
   if (!onboarded && !inWelcome && !inRestoreAuth) return Routes.welcome;
   if (onboarded && inWelcome) return Routes.dashboard;
   final atLock = location == Routes.lock;

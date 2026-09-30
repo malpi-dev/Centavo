@@ -56,6 +56,10 @@ Future<void> confirmAndEraseData(BuildContext context, WidgetRef ref) async {
   if (second != true) return;
   try {
     await ref.read(localStoreProvider).eraseAll();
+    // Leaves the app like a fresh install; the cloud backup is untouched.
+    if (ref.read(isBackupAvailableProvider)) {
+      await ref.read(authRepositoryProvider).signOut();
+    }
     await ref.read(settingsRepositoryProvider).clear();
     ref.invalidate(settingsControllerProvider);
   } on Object catch (e) {
