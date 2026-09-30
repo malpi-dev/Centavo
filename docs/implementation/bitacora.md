@@ -205,6 +205,9 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 10 | `pumpCentavo`/`testOverrides` aceptan `biometric`, `secureWindow` y `csvShare`. | Evita sobrescribir dos veces el mismo provider. |
 | 2026-09-29 | 10 | En tests con Drift, las escrituras de categorías y movimientos van en `runRepo` separados. | Dos escrituras en un mismo `runRepo` dejaban el test colgado. |
 | 2026-09-29 | 10 | `persistAcrossBackgrounding: true` en `local_auth` 3.x (equivalente a `stickyAuth`); errores vía `LocalAuthException` + `LocalAuthExceptionCode`. | API de la versión instalada. |
+| 2026-09-29 | 11 | `check_category_type` usa `if`/`elsif` anidados por tabla en vez de `and` en una sola condición. | plpgsql no hace cortocircuito: `new.type` fallaba en `budgets` (sin columna `type`). |
+| 2026-09-29 | 11 | En los tests pgTAP, `update`/`delete` con CTE se ejecutan como `with … select is(count(*)…) from cte` de nivel superior. | Postgres no admite CTE con DML dentro de una subconsulta. |
+| 2026-09-29 | 11 | El seed numera los movimientos por mes con `row_number()` (orden por día y regla) para el `createdAt`; los presupuestos usan `gen_random_uuid()`. | SQL puro; los ids no necesitan coincidir con los del demo en Dart. |
 
 ## Bloqueos
 
@@ -213,6 +216,3 @@ _Ninguno._
 ## Ideas para el roadmap (fuera del MVP)
 
 _Anotar aquí; luego pasan a la sección "Roadmap" del README._
-| 2026-09-29 | 11 | `check_category_type` usa `if`/`elsif` anidados por tabla en vez de `and` en una sola condición. | plpgsql no hace cortocircuito: `new.type` fallaba en `budgets` (sin columna `type`). |
-| 2026-09-29 | 11 | En los tests pgTAP, `update`/`delete` con CTE se ejecutan como `with … select is(count(*)…) from cte` de nivel superior. | Postgres no admite CTE con DML dentro de una subconsulta. |
-| 2026-09-29 | 11 | El seed numera los movimientos por mes con `row_number()` (orden por día y regla) para el `createdAt`; los presupuestos usan `gen_random_uuid()`. | SQL puro; los ids no necesitan coincidir con los del demo en Dart. |
