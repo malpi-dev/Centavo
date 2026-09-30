@@ -5,9 +5,9 @@
 
 ## Avance
 
-`████████████▒░` 12/14 fases terminadas (86 %)
+`█████████████░` 13/14 fases terminadas (93 %)
 
-**Fase actual:** Fase 13 · Pulido y E2E (en progreso)
+**Fase actual:** ninguna — la siguiente es la Fase 14 · Lanzamiento
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -27,7 +27,7 @@
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | 🚧 En progreso | 2026-09-29 | — |
+| 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 14 | Lanzamiento | `feat/fase-14-lanzamiento` | ⏳ Pendiente | — | — |
 
 Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
@@ -50,7 +50,7 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | share_plus | 13.3.0 |
 | very_good_analysis | 10.3.0 |
 | Supabase CLI | 2.118.0 |
-| Maestro | — (fase 13) |
+| Maestro | 2.10.0 (ya instalado en `~/.maestro`; Java 17 Zulu) |
 
 ## Registro
 
@@ -61,6 +61,13 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 13 · Pulido y E2E — 2026-09-29
+- **Hecho:** ícono adaptativo (moneda de cobre "¢" sobre verde pino) y splash claro/oscuro con Android 12 (SVG en `assets/icon/`, PNG con `librsvg` instalado por `brew install librsvg`, generados con `flutter_launcher_icons` y `flutter_native_splash`); logo en Welcome y Lock. Auditoría de estados: `test/app/ui_states_test.dart` (18 tests) cubre las celdas sin test (skeletons de Dashboard/Transactions/Budgets/Categories, errores con *Retry*, spinner de edición, SnackBar de `StorageError`, Lock `lockedOut`/`notAvailable` y spinner de espera, Backup beneficios/progreso/backend caído, Export progreso y errores de escritura/compartir, spinner de restauración); el resto ya estaba cubierto por tests de fases previas. `test/app/screens_smoke_test.dart` (12 pantallas x claro/oscuro x 360x640/411x891 x texto 1.0/1.3, sin overflow) y `test/app/accessibility_test.dart` (tap targets y contraste en 9 pantallas, ambos temas). Arreglos: tooltips en el selector de mes, `Semantics(label)` en `CategoryAvatar` (parámetro `label`), swatches de color a 48 dp con semántica, `Colors.white` movido a `CentavoColors.onCategory`. Greps de colores/textos sueltos: vacíos. Flujos Maestro `.maestro/demo_add_expense.yaml` y `.maestro/fresh_start_budget.yaml`, más `tool/e2e.sh`.
+- **Maestro (emulador Pixel_10_Pro, APK release sin `.env.json`):** `2/2 Flows Passed in 59s` (Demo - add an expense: 24 s; Fresh start - set a budget: 35 s).
+- **Decisiones/hallazgos:** el banner de demo no aparecía en el árbol de accesibilidad (una ruta opaca bloquea la semántica de los nodos pintados antes): ahora `Column(verticalDirection: up)` lo pinta después del Navigator sin cambiar el aspecto. `dashboard-expense` pasa a envolver solo el texto del monto (`container: true`). Las tabs de `NavigationBar` exponen `content-desc` "Nombre\nTab n of 4", así que los flujos usan la regex `"Transactions.*"`/`"Budgets.*"`; los chips de categoría se tocan por id (`tx-category-coffee`, `tx-category-food`). `pumpCentavo` acepta `size` y `textScale`; `csvShare` se tipa como `CsvShareService`.
+- **Pendientes (verificación manual del autor en teléfono real):** huella real con `App lock` (solo se probó PIN en emulador), abrir el CSV en Google Sheets, recientes de Android (miniatura con `FLAG_SECURE`), modo avión / `supabase stop` con la app de respaldo y LWW entre dos dispositivos, flujo D completo con datos propios. Capturas del emulador revisadas en oscuro (Dashboard, Budgets) y claro (Dashboard).
+- **Herramientas:** Maestro ya estaba instalado; `librsvg` instalado con Homebrew (efecto fuera del repo).
 
 ### Fase 12 · Respaldo — 2026-09-29
 - **Hecho:** dominio de respaldo (`AuthRepository`, `BackupRepository`, `SyncStateRepository`, `RunBackup`, `RestoreBackup`, validadores); `changedSince`/`mergeFromBackup` en los 3 repos locales (Drift y mock, mismas reglas LWW, sufijo " 2" en categorías y ganador por `updatedAt` en presupuestos); DTOs, `mapSupabaseError`, repos Supabase y mock (auth OTP, respaldo, sync state); providers; pantallas Backup, Sign in y Verify; `AutoBackupController` (≥ 24 h, al abrir/reanudar); fila Backup en Settings, *Restore from backup* en Welcome, redirect 3, *Erase* cierra sesión; `Supabase.initialize` en `main`.

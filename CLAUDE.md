@@ -13,6 +13,7 @@ implementations.
 ## Commands
 
 - `./tool/check.sh` — full verification (pub get, gen-l10n, build_runner, format, architecture check, analyze, tests).
+- `./tool/e2e.sh` — builds the release APK, installs it on the connected device and runs the Maestro flows in `.maestro/` (run locally before tagging; not in CI).
 - `dart run build_runner watch -d` — regenerate code while developing.
 - `flutter run --dart-define-from-file=.env.json` — run with backup configured (plain `flutter run` = local + demo mode).
 
