@@ -91,7 +91,9 @@
   "noTransactionsInMonth": "No transactions in {month}",
   "@noTransactionsInMonth": {
     "placeholders": {
-      "month": {"type": "String"}
+      "month": {
+        "type": "String"
+      }
     }
   },
   "addFirstTransaction": "Add your first transaction",
@@ -106,27 +108,39 @@
   "spentOfLimit": "Spent {spent} of {limit}",
   "@spentOfLimit": {
     "placeholders": {
-      "spent": {"type": "String"},
-      "limit": {"type": "String"}
+      "spent": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
     }
   },
   "lineSpentOfLimit": "{spent} of {limit}",
   "@lineSpentOfLimit": {
     "placeholders": {
-      "spent": {"type": "String"},
-      "limit": {"type": "String"}
+      "spent": {
+        "type": "String"
+      },
+      "limit": {
+        "type": "String"
+      }
     }
   },
   "leftAmount": "{amount} left",
   "@leftAmount": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "overBy": "Over by {amount}",
   "@overBy": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "statusOnTrack": "On track",
@@ -135,7 +149,9 @@
   "unbudgetedSpending": "Unbudgeted spending: {amount}",
   "@unbudgetedSpending": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "notBudgeted": "Not budgeted",
@@ -144,21 +160,27 @@
   "noBudgetsInMonth": "No budgets for {month}",
   "@noBudgetsInMonth": {
     "placeholders": {
-      "month": {"type": "String"}
+      "month": {
+        "type": "String"
+      }
     }
   },
   "copyFromPreviousMonth": "Copy from previous month",
   "copiedBudgets": "{count, plural, =1{Copied 1 budget} other{Copied {count} budgets}}",
   "@copiedBudgets": {
     "placeholders": {
-      "count": {"type": "int"}
+      "count": {
+        "type": "int"
+      }
     }
   },
   "monthlyLimit": "Monthly limit",
   "spentSoFar": "Spent so far: {amount}",
   "@spentSoFar": {
     "placeholders": {
-      "amount": {"type": "String"}
+      "amount": {
+        "type": "String"
+      }
     }
   },
   "removeBudget": "Remove budget",
@@ -180,29 +202,95 @@
   "chartTooltip": "{month} · Income {income} · Expenses {expenses}",
   "@chartTooltip": {
     "placeholders": {
-      "month": {"type": "String"},
-      "income": {"type": "String"},
-      "expenses": {"type": "String"}
+      "month": {
+        "type": "String"
+      },
+      "income": {
+        "type": "String"
+      },
+      "expenses": {
+        "type": "String"
+      }
     }
   },
   "expensesByCategorySemantics": "Expenses by category: {summary}",
   "@expensesByCategorySemantics": {
     "placeholders": {
-      "summary": {"type": "String"}
+      "summary": {
+        "type": "String"
+      }
     }
   },
   "percentValue": "{percent} %",
   "@percentValue": {
     "placeholders": {
-      "percent": {"type": "int"}
+      "percent": {
+        "type": "int"
+      }
     }
   },
   "sliceSemantics": "{name} {percent} %",
   "@sliceSemantics": {
     "placeholders": {
-      "name": {"type": "String"},
-      "percent": {"type": "int"}
+      "name": {
+        "type": "String"
+      },
+      "percent": {
+        "type": "int"
+      }
     }
   },
-  "incomeVsExpensesSemantics": "Income and expenses for the last 6 months"
+  "incomeVsExpensesSemantics": "Income and expenses for the last 6 months",
+  "lockTitle": "Centavo is locked",
+  "lockUnlock": "Unlock",
+  "lockReason": "Unlock Centavo",
+  "settingsSectionAppearance": "Appearance",
+  "settingsSectionSecurity": "Security",
+  "settingsSectionData": "Data",
+  "settingsSectionDemo": "Demo",
+  "settingsSectionAbout": "About",
+  "settingsTheme": "Theme",
+  "themeSystem": "System",
+  "themeLight": "Light",
+  "themeDark": "Dark",
+  "settingsCurrency": "Currency",
+  "currencyChangeTitle": "Change currency?",
+  "currencyChangeWarning": "Changing the currency only changes how amounts are displayed. Amounts are not converted.",
+  "currencyChangeConfirm": "Change",
+  "settingsAppLock": "App lock",
+  "appLockSubtitle": "Ask for your fingerprint, face or screen lock when opening the app",
+  "appLockNeedsScreenLock": "Set up a screen lock on this device first",
+  "appLockConfirmReason": "Confirm to turn on app lock",
+  "settingsExport": "Export CSV",
+  "settingsErase": "Erase all local data",
+  "settingsAbout": "About Centavo",
+  "eraseTitle": "Erase all data?",
+  "eraseMessage": "This deletes all transactions, categories and budgets on this device.",
+  "eraseContinue": "Continue",
+  "eraseFinalTitle": "This can't be undone",
+  "eraseFinalMessage": "Everything on this device will be permanently deleted.",
+  "eraseEverything": "Erase everything",
+  "exportTitle": "Export CSV",
+  "exportThisMonth": "This month",
+  "exportChooseMonth": "Choose a month",
+  "exportAllTime": "All time",
+  "exportRun": "Export CSV",
+  "exportColumnsInfo": "Columns: date, type, category, amount, currency, note",
+  "aboutTitle": "About Centavo",
+  "aboutTagline": "Offline-first personal finance.",
+  "aboutVersion": "Version",
+  "aboutSourceCode": "Source code",
+  "aboutLinkCopied": "Link copied",
+  "aboutLicenses": "Open-source licenses",
+  "aboutVersionValue": "{version} ({build})",
+  "@aboutVersionValue": {
+    "placeholders": {
+      "version": {
+        "type": "String"
+      },
+      "build": {
+        "type": "String"
+      }
+    }
+  }
 }

@@ -15,6 +15,13 @@ import 'package:centavo/features/categories/domain/category_repository.dart';
 import 'package:centavo/features/demo/data/demo_dataset.dart';
 import 'package:centavo/features/demo/data/mock_data_store.dart';
 import 'package:centavo/features/demo/data/mock_local_store.dart';
+import 'package:centavo/features/export/data/file_share_csv_service.dart';
+import 'package:centavo/features/export/domain/csv_share_service.dart';
+import 'package:centavo/features/security/data/local_auth_biometric_repository.dart';
+import 'package:centavo/features/security/data/method_channel_secure_window_service.dart';
+import 'package:centavo/features/security/data/mock_biometric_repository.dart';
+import 'package:centavo/features/security/domain/biometric_repository.dart';
+import 'package:centavo/features/security/domain/secure_window_service.dart';
 import 'package:centavo/features/settings/data/in_memory_settings_repository.dart';
 import 'package:centavo/features/settings/data/prefs_settings_repository.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
@@ -129,3 +136,22 @@ LocalStore localStore(Ref ref) =>
       AppMode.local => DriftLocalStore(ref.watch(appDatabaseProvider)),
       AppMode.demo => MockLocalStore(ref.watch(demoDataStoreProvider)),
     };
+
+@Riverpod(keepAlive: true)
+BiometricRepository biometricRepository(Ref ref) =>
+    switch (ref.watch(appModeControllerProvider)) {
+      AppMode.local => LocalAuthBiometricRepository(),
+      AppMode.demo => MockBiometricRepository(),
+    };
+
+/// Same in every mode: FLAG_SECURE belongs to the real window, so demo mode
+/// must not leave it stuck when the settings are swapped. Tests override it
+/// with `NoopSecureWindowService`.
+@Riverpod(keepAlive: true)
+SecureWindowService secureWindowService(Ref ref) =>
+    MethodChannelSecureWindowService();
+
+/// Real implementation in every mode: exporting the sample data is harmless
+/// and shows the feature. Tests override it with the mock.
+@Riverpod(keepAlive: true)
+CsvShareService csvShareService(Ref ref) => FileShareCsvService();
