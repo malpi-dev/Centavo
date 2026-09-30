@@ -5,9 +5,9 @@
 
 ## Avance
 
-`██████████░░░░` 10/14 fases terminadas (71 %)
+`██████████▒░░░` 10/14 fases terminadas (71 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 11 · Backend Supabase
+**Fase actual:** Fase 11 · Backend Supabase (🚧 en progreso)
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -25,7 +25,7 @@
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ⏳ Pendiente | — | — |
+| 11 | Backend Supabase | `feat/fase-11-backend-supabase` | 🚧 En progreso | 2026-09-29 | — |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ⏳ Pendiente | — | — |
 | 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | ⏳ Pendiente | — | — |
 | 14 | Lanzamiento | `feat/fase-14-lanzamiento` | ⏳ Pendiente | — | — |
