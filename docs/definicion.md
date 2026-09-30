@@ -4,12 +4,12 @@
 |---|---|
 | **Tagline** | *Your money, on your phone. No account needed.* — finanzas personales offline-first |
 | **Stack** | Flutter stable · Riverpod (`riverpod_generator`) · go_router · Drift · freezed · fl_chart · `supabase_flutter` |
-| **Plataforma** | Android (objetivo principal) · iOS si es posible |
+| **Plataforma** | Android (v1.0.0) · iOS fuera de la v1.0.0 (código compatible, no verificado) |
 | **Estado** | 📋 Planificado |
 | **Versión del documento** | 1.0 |
 | **Fecha** | 2026-09-25 |
 | **Repo** | `centavo` (carpeta local `Centavo/`) |
-| **Bundle id** | `com.malpidev.centavo` *(propuesta)* |
+| **Bundle id** | `com.malpidev.centavo` *(confirmado)* |
 
 > Este documento define **qué** se construye y **qué no**. Es la base para el plan de implementación,
 > pero no es el plan: no desglosa tareas por día. Las reglas generales viven en `../CLAUDE.md` del
@@ -443,7 +443,7 @@ Solo rol `authenticated`; `anon` no tiene políticas (acceso denegado). El `dele
 ### 7.4 Auth y perfiles
 
 - Auth **opcional**, solo para respaldo. Método: `signInWithOtp(email, shouldCreateUser: true)` + `verifyOTP(type: email)` con código de 6 dígitos.
-  Es la convención común de las 4 apps (`CLAUDE.md`): plantilla de email genérica con `{{ .Token }}`, "Confirm email" activado y SMTP propio en remoto.
+  Es la convención común de las 4 apps (`CLAUDE.md`): plantilla de email genérica con `{{ .Token }}`, "Confirm email" activado y SMTP por defecto de Supabase (solo entrega a miembros del equipo; ver `CLAUDE.md`).
 - `auth.users` es compartido con Agendo, Rutta y Vitrina: el mismo email es el mismo usuario en todas.
   **No** se usa un trigger sobre `auth.users` (crearía perfiles de Centavo para usuarios de otras apps); tras verificar el
   código la app llama a la RPC `centavo.ensure_profile()` (`security definer`, idempotente), único camino para crear perfiles.
@@ -815,7 +815,7 @@ Fuera del cliente (no van en `.env.json`):
 ## 16. Definición de terminado
 
 Para pasar a ✅ **MVP listo**:
-- [ ] F1–F10 cumplen sus criterios de aceptación en Android (e iOS si es posible).
+- [ ] F1–F10 cumplen sus criterios de aceptación en Android.
 - [ ] Toda la app funciona en modo avión sin cuenta (verificado manualmente).
 - [ ] Modo demo funcionando sin backend y sin `.env.json`.
 - [ ] Respaldo y restauración verificados entre dos dispositivos/emuladores contra Supabase local y remoto.
@@ -838,7 +838,7 @@ Para 🚀 **Publicado**: APK en GitHub Releases + GIF de demo (15–30 s: demo �
 | Riesgo | Mitigación |
 |---|---|
 | Semana 1 compartida con Agendo: poco tiempo | Orden de §18; el respaldo (F8) va al final y es lo primero que se recorta a "manual solamente" si falta tiempo. |
-| Límite de emails del SMTP por defecto de Supabase (pocos por hora) | Resuelto para todo el proyecto: SMTP propio en remoto (p. ej. Resend free). |
+| SMTP por defecto de Supabase: pocos correos por hora y solo a miembros del equipo | Aceptado (sin dominio propio); el respaldo es opcional y la app funciona al 100% sin cuenta. |
 | Reloj del dispositivo desajustado rompe LWW | Supuesto de un dispositivo a la vez; documentado en README. |
 | Proyecto Supabase pausado | La app no depende de él; `BackendUnavailableError` con mensaje claro. Keep-alive en Agendo. |
 | `local_auth` requiere `FlutterFragmentActivity` y varía por OEM | Incluido en el andamiaje; probar en emulador con huella simulada y en un dispositivo real. |
@@ -861,11 +861,14 @@ Para 🚀 **Publicado**: APK en GitHub Releases + GIF de demo (15–30 s: demo �
 8. Mock = listas en memoria; tests de repositorio = Drift en memoria.
 9. Ajustes locales en `shared_preferences`, no en Drift, y no se respaldan (salvo moneda).
 
+**Decisiones cerradas (2026-09-25)**
+- Solo Android en v1.0.0; bundle id `com.malpidev.centavo` confirmado.
+- SMTP por defecto de Supabase (sin dominio propio).
+
 **Decisiones abiertas**
 - ¿Commitear el código generado (`*.g.dart`, `*.freezed.dart`)? Propuesta: **no**, se genera en CI.
 - ¿Maestro en CI (emulador en GitHub Actions)? Propuesta: no en MVP; se corre local antes de cada tag.
 - ¿RPC `backup_batch(jsonb)` si el upsert por lotes es lento? Medir primero.
-- ¿Soporte iOS verificado? Depende de disponibilidad de dispositivo/simulador y tiempo.
 - Tipografías Manrope + Inter vs. una sola familia para reducir tamaño del APK.
 
 ---
