@@ -1,20 +1,17 @@
-import 'package:centavo/app.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'helpers/test_overrides.dart';
+import 'helpers/pump_centavo.dart';
 
 void main() {
   testWidgets('welcome, then Start fresh reveals the tab bar', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(overrides: testOverrides(), child: const CentavoApp()),
-    );
-    await tester.pumpAndSettle();
+    await pumpCentavo(tester);
     expect(find.text('Start fresh'), findsOneWidget);
 
     await tester.tap(find.byKey(const Key('welcome-start-fresh')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const Key('currency-continue')));
     await tester.pumpAndSettle();
 
     expect(find.byType(NavigationBar), findsOneWidget);
@@ -32,15 +29,10 @@ void main() {
   });
 
   testWidgets('onboarded users land on the dashboard', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        overrides: testOverrides(
-          settings: const AppSettings(onboardingCompleted: true),
-        ),
-        child: const CentavoApp(),
-      ),
+    await pumpCentavo(
+      tester,
+      settings: const AppSettings(onboardingCompleted: true),
     );
-    await tester.pumpAndSettle();
     expect(find.byType(NavigationBar), findsOneWidget);
     expect(find.text('Start fresh'), findsNothing);
   });

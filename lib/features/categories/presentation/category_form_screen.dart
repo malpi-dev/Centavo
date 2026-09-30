@@ -145,10 +145,6 @@ class _CategoryFormState extends ConsumerState<_CategoryForm> {
     if (!ref.read(categoryFormControllerProvider).hasError) context.pop();
   }
 
-  void _snack(String message) => ScaffoldMessenger.of(
-    context,
-  ).showSnackBar(SnackBar(content: Text(message)));
-
   Future<void> _toggleArchive(Category category) async {
     final l10n = context.l10n;
     final controller = ref.read(categoryFormControllerProvider.notifier);
