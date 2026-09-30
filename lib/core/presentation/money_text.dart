@@ -9,12 +9,16 @@ class MoneyText extends StatelessWidget {
   const MoneyText(
     this.money, {
     this.tone = MoneyTone.neutral,
+    this.signed = false,
     this.style,
     super.key,
   });
 
   final Money money;
   final MoneyTone tone;
+
+  /// Prefix positive amounts with `+`.
+  final bool signed;
   final TextStyle? style;
 
   @override
@@ -27,7 +31,7 @@ class MoneyText extends StatelessWidget {
     };
     final base = style ?? Theme.of(context).textTheme.bodyLarge;
     return Text(
-      formatMoney(money),
+      formatMoney(money, signed: signed),
       style: base?.copyWith(
         color: color,
         fontFeatures: const [FontFeature.tabularFigures()],

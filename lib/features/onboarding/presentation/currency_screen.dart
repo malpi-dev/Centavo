@@ -1,6 +1,7 @@
 import 'package:centavo/core/domain/currency.dart';
 import 'package:centavo/core/presentation/error_messages.dart';
 import 'package:centavo/core/presentation/l10n_extension.dart';
+import 'package:centavo/core/presentation/root_scaffold_messenger.dart';
 import 'package:centavo/features/onboarding/presentation/onboarding_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -24,7 +25,7 @@ class _CurrencyScreenState extends ConsumerState<CurrencyScreen> {
     final state = ref.watch(onboardingControllerProvider);
     ref.listen(onboardingControllerProvider, (_, next) {
       if (next is AsyncError) {
-        ScaffoldMessenger.of(context).showSnackBar(
+        rootScaffoldMessengerKey.currentState?.showSnackBar(
           SnackBar(content: Text(messageFor(next.error, l10n))),
         );
       }

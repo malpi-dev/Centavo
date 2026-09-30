@@ -5,9 +5,9 @@
 
 ## Avance
 
-`██████░░░░░░░░` 6/14 fases terminadas (43 %)
+`███████░░░░░░░` 7/14 fases terminadas (50 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 07 · Movimientos
+**Fase actual:** ninguna — la siguiente es la Fase 08 · Presupuestos
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -21,7 +21,7 @@
 | 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 07 | Movimientos | `feat/fase-07-movimientos` | ⏳ Pendiente | — | — |
+| 07 | Movimientos | `feat/fase-07-movimientos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ⏳ Pendiente | — | — |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ⏳ Pendiente | — | — |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ⏳ Pendiente | — | — |
@@ -61,6 +61,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 07 · Movimientos — 2026-09-29
+- **Hecho:** `rootScaffoldMessengerKey` (todos los SnackBars pasan por él); `transactions_providers` (`monthTransactions`, `TransactionFilter`/controlador, `transactionGroups`, `transactionById`), `groupTransactionsByDay`, `TransactionsScreen` (selector de mes, filtros por tipo/categoría, lista por día con neto, `Dismissible`, estados de carga/vacío/vacío filtrado/error), `TransactionFormScreen` (crear/editar/borrar, categorías archivadas al editar), `TransactionFormController`, `confirmAndDeleteTransaction` (diálogo + *Undo* 4 s); FAB `+` en Dashboard/Transactions/Budgets; rutas `/transactions/new` y `/transactions/:id` a pantalla completa; `MoneyText.signed`; textos l10n. Tests de agrupación, pantalla, formulario, borrado y modo demo (`./tool/check.sh` pasa). Verificado en emulador Android (emulator-5554, modo oscuro, modo avión activado): FAB desde Dashboard, crear gasto 12.50 en Food, lista con `−$12.50` y neto del día, deslizar -> diálogo -> borrado -> SnackBar con *Undo* -> estado vacío.
+- **PR:** ver historial de GitHub (`feat: phase 07 - transactions`).
+- **Decisiones:** ver tabla de desviaciones.
+- **Pendientes:** editar, filtros, *Undo* al tocar, CLP y demo se cubrieron con tests de widgets, no a mano en el emulador; repetir a mano en la fase 13.
 
 ### Fase 06 · Onboarding y categorías — 2026-09-29
 - **Hecho:** `WelcomeScreen` definitiva, `CurrencyScreen` (preselección por locale, `RadioGroup`), `OnboardingController.completeFreshStart` (categorías primero, ajuste después); `category_icons`, `CategoryAvatar`; `categoriesProvider`/`activeCategoriesOfType`/`categoryById`, `CategoryFormController`, `CategoriesScreen` (Expenses/Income/Archived) y `CategoryFormScreen` (crear, editar, archivar, desarchivar, borrar); rutas `/welcome/currency` y `/settings/categories[/new|/:id]`; tile provisional en Ajustes; textos l10n. Tests: flujo de onboarding, controlador, pantalla de categorías y formulario (251 tests). `./tool/check.sh` pasa. Verificado en emulador Android (emulator-5554, modo oscuro): Welcome -> moneda -> Ajustes -> Categories -> formulario nuevo.
@@ -155,6 +161,11 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 06 | El método del controlador del formulario se llama `edit` (no `update`). | `update` choca con `AsyncNotifier.update`. |
 | 2026-09-29 | 06 | El formulario guarda con `await` + comprobar `hasError` para hacer `pop`, y `ref.listen` solo gestiona errores. | Equivalente al patrón del paso 1 y evita dobles pops. |
 | 2026-09-29 | 06 | Tests de widgets con Drift usan `testCentavo`/`runRepo` (desmontan la app y esperan los streams) y `pumpCentavo` fija una pantalla 800x1600. | Los timers de cancelación de streams de Drift fallan la verificación de timers pendientes. `app_smoke_test` ahora también usa base en memoria. |
+| 2026-09-29 | 07 | `ProviderScope(retry: noAutomaticRetry)` (main y tests). | Riverpod 3 reintenta providers fallidos con backoff y la pantalla se quedaba en "loading" en vez de mostrar el error con *Retry*. |
+| 2026-09-29 | 07 | `SnackBar` de *Undo* con `persist: false` y sin `duration` explícito. | Con `action` el SnackBar persiste por defecto; `persist: false` lo cierra tras los 4 s por defecto (el lint rechaza pasar 4 s explícitos). |
+| 2026-09-29 | 07 | `Dismissible.confirmDismiss` siempre devuelve `false` tras borrar. | La fila desaparece por el stream; evita el error de Dismissible "still in the tree". |
+| 2026-09-29 | 07 | Las keys `tx-type-*` van en el `Text` de cada `ButtonSegment` (no tiene `key`); chips de categoría sin checkmark. | `ButtonSegment` no acepta key; el checkmark tapaba el avatar. |
+| 2026-09-29 | 07 | `pumpCentavo` acepta `overrides`; `MoneyText` gana `signed`. | Test del error del stream y signo `+` en ingresos. |
 
 ## Bloqueos
 

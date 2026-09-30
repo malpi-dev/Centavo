@@ -74,5 +74,32 @@
   "expense": "Expense",
   "income": "Income",
   "back": "Back",
-  "itemNotFound": "This item no longer exists."
+  "itemNotFound": "This item no longer exists.",
+  "transactionsTitle": "Transactions",
+  "newTransaction": "New transaction",
+  "editTransaction": "Edit transaction",
+  "amount": "Amount",
+  "category": "Category",
+  "date": "Date",
+  "note": "Note",
+  "noteHint": "Optional",
+  "filterAll": "All",
+  "filterExpenses": "Expenses",
+  "filterIncome": "Income",
+  "allCategories": "All categories",
+  "clearFilters": "Clear filters",
+  "noTransactionsInMonth": "No transactions in {month}",
+  "@noTransactionsInMonth": {
+    "placeholders": {
+      "month": {"type": "String"}
+    }
+  },
+  "addFirstTransaction": "Add your first transaction",
+  "noResults": "No results",
+  "unknownCategory": "Unknown category",
+  "noCategoriesOfType": "No categories of this type yet.",
+  "createCategory": "Create category",
+  "deleteTransactionTitle": "Delete transaction?",
+  "transactionDeleted": "Transaction deleted",
+  "addTransaction": "Add transaction"
 }
