@@ -121,4 +121,57 @@ class DriftBudgetRepository implements BudgetRepository {
   @override
   Future<void> softDeleteByCategory(String categoryId) =>
       _tombstone((b) => b.categoryId.equals(categoryId));
+
+  @override
+  Future<List<Budget>> changedSince(DateTime? sinceUtc) =>
+      guardStorage(() async {
+        final query = _db.select(_table)
+          ..orderBy([
+            (b) => OrderingTerm.asc(b.updatedAt),
+            (b) => OrderingTerm.asc(b.id),
+          ]);
+        if (sinceUtc != null) {
+          query.where((b) => b.updatedAt.isBiggerThanValue(sinceUtc));
+        }
+        return (await query.get()).map((r) => r.toDomain()).toList();
+      }, entity: _entity);
+
+  @override
+  Future<void> mergeFromBackup(List<Budget> incoming) => guardStorage(() async {
+    for (final row in incoming) {
+      final local = await (_db.select(
+        _table,
+      )..where((b) => b.id.equals(row.id))).getSingleOrNull();
+      if (local != null && !local.updatedAt.isBefore(row.updatedAt)) {
+        continue;
+      }
+      var toWrite = row;
+      if (row.deletedAt == null) {
+        final rival =
+            await (_db.select(_table)..where(
+                  (b) =>
+                      b.categoryId.equals(row.categoryId) &
+                      b.month.equals(row.month.toFirstDayIso()) &
+                      b.deletedAt.isNull() &
+                      b.id.equals(row.id).not(),
+                ))
+                .getSingleOrNull();
+        if (rival != null) {
+          if (rival.updatedAt.isBefore(row.updatedAt)) {
+            // The incoming budget is newer: the local rival loses.
+            final now = _clock.nowUtc();
+            await (_db.update(
+              _table,
+            )..where((b) => b.id.equals(rival.id))).write(
+              BudgetsCompanion(deletedAt: Value(now), updatedAt: Value(now)),
+            );
+          } else {
+            final now = _clock.nowUtc();
+            toWrite = row.copyWith(deletedAt: now, updatedAt: now);
+          }
+        }
+      }
+      await _db.into(_table).insertOnConflictUpdate(toWrite.toCompanion());
+    }
+  }, entity: _entity);
 }

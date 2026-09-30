@@ -165,4 +165,32 @@ class DriftTransactionRepository implements TransactionRepository {
       ..where(_table.categoryId.equals(categoryId) & _table.deletedAt.isNull());
     return (await query.getSingle()).read(count) ?? 0;
   }, entity: _entity);
+
+  @override
+  Future<List<MoneyTransaction>> changedSince(DateTime? sinceUtc) =>
+      guardStorage(() async {
+        final query = _db.select(_table)
+          ..orderBy([
+            (t) => OrderingTerm.asc(t.updatedAt),
+            (t) => OrderingTerm.asc(t.id),
+          ]);
+        if (sinceUtc != null) {
+          query.where((t) => t.updatedAt.isBiggerThanValue(sinceUtc));
+        }
+        return (await query.get()).map((r) => r.toDomain()).toList();
+      }, entity: _entity);
+
+  @override
+  Future<void> mergeFromBackup(List<MoneyTransaction> incoming) =>
+      guardStorage(() async {
+        for (final row in incoming) {
+          final local = await (_db.select(
+            _table,
+          )..where((t) => t.id.equals(row.id))).getSingleOrNull();
+          if (local != null && !local.updatedAt.isBefore(row.updatedAt)) {
+            continue;
+          }
+          await _db.into(_table).insertOnConflictUpdate(row.toCompanion());
+        }
+      }, entity: _entity);
 }

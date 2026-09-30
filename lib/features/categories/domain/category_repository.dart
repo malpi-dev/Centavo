@@ -38,4 +38,14 @@ abstract interface class CategoryRepository {
   /// Inserts categories keeping their ids and timestamps. Ids that already
   /// exist (even deleted) are skipped.
   Future<void> insertIfAbsent(List<Category> categories);
+
+  /// Rows with updatedAt > [sinceUtc] (all rows when null), INCLUDING
+  /// archived and deleted ones, ordered by updatedAt.
+  Future<List<Category>> changedSince(DateTime? sinceUtc);
+
+  /// Merges rows downloaded from the backup (last-write-wins by id). Never
+  /// deletes local rows that are not in [incoming].
+  /// An active incoming category whose (name, type) clashes with ANOTHER
+  /// active local one is saved as `"<name> 2"` (then 3, ...).
+  Future<void> mergeFromBackup(List<Category> incoming);
 }
