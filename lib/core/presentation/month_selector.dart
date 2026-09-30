@@ -17,7 +17,9 @@ class MonthSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final canGoNext = maxMonth == null || month < maxMonth!;
-    final label = DateFormat.yMMMM('en_US').format(DateTime(month.year, month.month));
+    final label = DateFormat.yMMMM(
+      'en_US',
+    ).format(DateTime(month.year, month.month));
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

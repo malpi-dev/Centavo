@@ -8,7 +8,6 @@ import 'package:centavo/features/onboarding/presentation/welcome_screen.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
 import 'package:centavo/features/settings/presentation/settings_screen.dart';
 import 'package:centavo/features/transactions/presentation/transactions_screen.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

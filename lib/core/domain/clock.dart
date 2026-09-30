@@ -1,6 +1,7 @@
 import 'package:centavo/core/domain/local_date.dart';
 
-/// Source of the current time. Inject it; never call `DateTime.now()` elsewhere.
+/// Source of the current time. Inject it; never call `DateTime.now()`
+/// elsewhere.
 abstract interface class Clock {
   DateTime nowUtc();
   LocalDate today();
@@ -19,9 +20,7 @@ class SystemClock implements Clock {
 /// Deterministic clock for tests and previews. [now] is mutable so tests can
 /// advance time.
 class FixedClock implements Clock {
-  FixedClock(DateTime now, {LocalDate? today})
-    : now = now.toUtc(),
-      _today = today;
+  FixedClock(DateTime now, {this._today}) : now = now.toUtc();
 
   DateTime now;
   final LocalDate? _today;

@@ -21,16 +21,17 @@ abstract final class AppTheme {
         : AppColors.onSurfaceLight;
     final error = isDark ? AppColors.errorDark : AppColors.errorLight;
 
-    final scheme = ColorScheme.fromSeed(
-      seedColor: AppColors.primaryLight,
-      brightness: brightness,
-    ).copyWith(
-      primary: primary,
-      secondary: secondary,
-      surface: surface,
-      onSurface: onSurface,
-      error: error,
-    );
+    final scheme =
+        ColorScheme.fromSeed(
+          seedColor: AppColors.primaryLight,
+          brightness: brightness,
+        ).copyWith(
+          primary: primary,
+          secondary: secondary,
+          surface: surface,
+          onSurface: onSurface,
+          error: error,
+        );
 
     return ThemeData(
       useMaterial3: true,

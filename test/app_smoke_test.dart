@@ -1,11 +1,47 @@
 import 'package:centavo/app.dart';
+import 'package:centavo/features/settings/domain/app_settings.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'helpers/test_overrides.dart';
+
 void main() {
-  testWidgets('shows the app name', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: CentavoApp()));
+  testWidgets('welcome, then Start fresh reveals the tab bar', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(overrides: testOverrides(), child: const CentavoApp()),
+    );
     await tester.pumpAndSettle();
-    expect(find.text('Centavo'), findsOneWidget);
+    expect(find.text('Start fresh'), findsOneWidget);
+
+    await tester.tap(find.byKey(const Key('welcome-start-fresh')));
+    await tester.pumpAndSettle();
+
+    expect(find.byType(NavigationBar), findsOneWidget);
+    for (final tab in [
+      'tab-dashboard',
+      'tab-transactions',
+      'tab-budgets',
+      'tab-settings',
+    ]) {
+      expect(find.byKey(Key(tab)), findsOneWidget, reason: tab);
+    }
+    await tester.tap(find.byKey(const Key('tab-budgets')));
+    await tester.pumpAndSettle();
+    expect(find.text('Coming soon'), findsOneWidget);
+  });
+
+  testWidgets('onboarded users land on the dashboard', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: testOverrides(
+          settings: const AppSettings(onboardingCompleted: true),
+        ),
+        child: const CentavoApp(),
+      ),
+    );
+    await tester.pumpAndSettle();
+    expect(find.byType(NavigationBar), findsOneWidget);
+    expect(find.text('Start fresh'), findsNothing);
   });
 }

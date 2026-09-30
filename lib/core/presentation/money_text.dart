@@ -6,7 +6,12 @@ import 'package:flutter/material.dart';
 enum MoneyTone { income, expense, neutral }
 
 class MoneyText extends StatelessWidget {
-  const MoneyText(this.money, {this.tone = MoneyTone.neutral, this.style, super.key});
+  const MoneyText(
+    this.money, {
+    this.tone = MoneyTone.neutral,
+    this.style,
+    super.key,
+  });
 
   final Money money;
   final MoneyTone tone;

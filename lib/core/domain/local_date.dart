@@ -5,8 +5,7 @@ import 'package:meta/meta.dart';
 class LocalDate implements Comparable<LocalDate> {
   /// Throws [ArgumentError] if the date does not exist (e.g. 2026-02-30).
   factory LocalDate(int year, int month, int day) {
-    final check = DateTime.utc(year, month, day);
-    if (check.year != year || check.month != month || check.day != day) {
+    if (!_exists(year, month, day)) {
       throw ArgumentError('Invalid date: $year-$month-$day');
     }
     return LocalDate._(year, month, day);
@@ -23,18 +22,21 @@ class LocalDate implements Comparable<LocalDate> {
     if (match == null) {
       throw FormatException('Expected YYYY-MM-DD', iso);
     }
-    try {
-      return LocalDate(
-        int.parse(match.group(1)!),
-        int.parse(match.group(2)!),
-        int.parse(match.group(3)!),
-      );
-    } on ArgumentError {
+    final year = int.parse(match.group(1)!);
+    final month = int.parse(match.group(2)!);
+    final day = int.parse(match.group(3)!);
+    if (!_exists(year, month, day)) {
       throw FormatException('Date does not exist', iso);
     }
+    return LocalDate._(year, month, day);
   }
 
   const LocalDate._(this.year, this.month, this.day);
+
+  static bool _exists(int year, int month, int day) {
+    final check = DateTime.utc(year, month, day);
+    return check.year == year && check.month == month && check.day == day;
+  }
 
   static final _isoPattern = RegExp(r'^(\d{4})-(\d{2})-(\d{2})$');
 
