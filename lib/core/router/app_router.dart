@@ -1,9 +1,13 @@
 import 'package:centavo/core/di/app_mode_provider.dart';
+import 'package:centavo/core/domain/transaction_type.dart';
 import 'package:centavo/core/router/app_redirect.dart';
 import 'package:centavo/core/router/app_shell.dart';
 import 'package:centavo/core/router/routes.dart';
 import 'package:centavo/features/budgets/presentation/budgets_screen.dart';
+import 'package:centavo/features/categories/presentation/categories_screen.dart';
+import 'package:centavo/features/categories/presentation/category_form_screen.dart';
 import 'package:centavo/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:centavo/features/onboarding/presentation/currency_screen.dart';
 import 'package:centavo/features/onboarding/presentation/welcome_screen.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
 import 'package:centavo/features/settings/presentation/settings_screen.dart';
@@ -34,7 +38,16 @@ GoRouter appRouter(Ref ref) {
       mode: ref.read(appModeControllerProvider),
     ),
     routes: [
-      GoRoute(path: Routes.welcome, builder: (_, _) => const WelcomeScreen()),
+      GoRoute(
+        path: Routes.welcome,
+        builder: (_, _) => const WelcomeScreen(),
+        routes: [
+          GoRoute(
+            path: 'currency',
+            builder: (_, _) => const CurrencyScreen(),
+          ),
+        ],
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => AppShell(navigationShell: shell),
         branches: [
@@ -67,6 +80,28 @@ GoRouter appRouter(Ref ref) {
               GoRoute(
                 path: Routes.settings,
                 builder: (_, _) => const SettingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: 'categories',
+                    builder: (_, _) => const CategoriesScreen(),
+                    routes: [
+                      // `new` must be declared before `:id`.
+                      GoRoute(
+                        path: 'new',
+                        builder: (_, state) => CategoryFormScreen(
+                          initialType: TransactionType.values
+                              .asNameMap()[state.uri.queryParameters['type']],
+                        ),
+                      ),
+                      GoRoute(
+                        path: ':id',
+                        builder: (_, state) => CategoryFormScreen(
+                          id: state.pathParameters['id'],
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

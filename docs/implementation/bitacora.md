@@ -5,9 +5,9 @@
 
 ## Avance
 
-`█████░░░░░░░░░` 5/14 fases terminadas (36 %)
+`██████░░░░░░░░` 6/14 fases terminadas (43 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 06 · Onboarding y categorías
+**Fase actual:** ninguna — la siguiente es la Fase 07 · Movimientos
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -20,7 +20,7 @@
 | 03 | Dominio | `feat/fase-03-dominio` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ⏳ Pendiente | — | — |
+| 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 07 | Movimientos | `feat/fase-07-movimientos` | ⏳ Pendiente | — | — |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ⏳ Pendiente | — | — |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ⏳ Pendiente | — | — |
@@ -61,6 +61,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 06 · Onboarding y categorías — 2026-09-29
+- **Hecho:** `WelcomeScreen` definitiva, `CurrencyScreen` (preselección por locale, `RadioGroup`), `OnboardingController.completeFreshStart` (categorías primero, ajuste después); `category_icons`, `CategoryAvatar`; `categoriesProvider`/`activeCategoriesOfType`/`categoryById`, `CategoryFormController`, `CategoriesScreen` (Expenses/Income/Archived) y `CategoryFormScreen` (crear, editar, archivar, desarchivar, borrar); rutas `/welcome/currency` y `/settings/categories[/new|/:id]`; tile provisional en Ajustes; textos l10n. Tests: flujo de onboarding, controlador, pantalla de categorías y formulario (251 tests). `./tool/check.sh` pasa. Verificado en emulador Android (emulator-5554, modo oscuro): Welcome -> moneda -> Ajustes -> Categories -> formulario nuevo.
+- **PR:** ver historial de GitHub (`feat: phase 06 - onboarding and categories`).
+- **Decisiones:** ver tabla de desviaciones.
+- **Pendientes:** la verificación manual completa (guardar/editar/archivar/borrar en el emulador y demo) se cubrió con tests de widgets; repetir a mano en la fase 13. Las rutas de categorías viven dentro del shell, así que la barra de tabs es visible en el formulario.
 
 ### Fase 05 · Modo demo — 2026-09-29
 - **Hecho:** `MockDataStore` (con streams que emulan a Drift), `MockCategoryRepository`, `MockTransactionRepository`, `MockBudgetRepository`, `MockLocalStore`; `DemoDataset` (patrón 4.1); providers de repositorios y ajustes que cambian según `AppMode` (`demoDataStore` y `demoSettingsRepository` se invalidan al entrar y salir del demo); `DemoBanner` en `MaterialApp.builder`; botón *Explore demo* en la bienvenida provisional; textos l10n. Suites de contrato compartidas (categorías, movimientos, presupuestos, `LocalStore`) ejecutadas contra Drift y mock; tests del dataset (4 "hoy"), providers y banner (238 tests). `./tool/check.sh` pasa. Verificado en el emulador Android (emulator-5554) sin `.env.json`: Welcome -> *Explore demo* -> banner en las 4 tabs -> *Exit demo* -> Welcome.
@@ -146,6 +152,9 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 05 | `MockDataStore.watch` usa un `StreamController` con `onListen` en vez de `async*`. | Evita perder cambios entre el primer valor y la suscripción. |
 | 2026-09-29 | 05 | `MockTransactionRepository` desempata por inserción más reciente primero. | Coincide con el orden observado en Drift cuando `createdAt` es igual (contrato compartido). |
 | 2026-09-29 | 05 | Los tests de solo-Drift (índice único parcial, `eraseAll` de las 4 tablas) quedan en sus archivos; el resto vive en `*_contract.dart`. | Paso 3 de la fase. |
+| 2026-09-29 | 06 | El método del controlador del formulario se llama `edit` (no `update`). | `update` choca con `AsyncNotifier.update`. |
+| 2026-09-29 | 06 | El formulario guarda con `await` + comprobar `hasError` para hacer `pop`, y `ref.listen` solo gestiona errores. | Equivalente al patrón del paso 1 y evita dobles pops. |
+| 2026-09-29 | 06 | Tests de widgets con Drift usan `testCentavo`/`runRepo` (desmontan la app y esperan los streams) y `pumpCentavo` fija una pantalla 800x1600. | Los timers de cancelación de streams de Drift fallan la verificación de timers pendientes. `app_smoke_test` ahora también usa base en memoria. |
 
 ## Bloqueos
 

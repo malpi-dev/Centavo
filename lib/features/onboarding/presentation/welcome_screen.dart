@@ -1,44 +1,68 @@
 import 'package:centavo/core/di/app_mode_provider.dart';
 import 'package:centavo/core/presentation/l10n_extension.dart';
-import 'package:centavo/features/settings/presentation/settings_controller.dart';
+import 'package:centavo/core/router/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
-/// Placeholder until phase 06 replaces it with the real onboarding flow.
 class WelcomeScreen extends ConsumerWidget {
   const WelcomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.l10n;
+    final theme = Theme.of(context);
     return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              l10n.welcomeTitle,
-              style: Theme.of(context).textTheme.headlineMedium,
+      body: SafeArea(
+        child: Center(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Icon(
+                  Icons.savings,
+                  size: 96,
+                  color: theme.colorScheme.primary,
+                ),
+                const SizedBox(height: 24),
+                Text(
+                  l10n.welcomeTitle,
+                  style: theme.textTheme.headlineMedium,
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  l10n.welcomeSubtitle,
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 32),
+                Semantics(
+                  identifier: 'welcome-start-fresh',
+                  child: FilledButton(
+                    key: const Key('welcome-start-fresh'),
+                    onPressed: () => context.push(Routes.welcomeCurrency),
+                    child: Text(l10n.startFresh),
+                  ),
+                ),
+                const SizedBox(height: 12),
+                Semantics(
+                  identifier: 'welcome-explore-demo',
+                  child: OutlinedButton(
+                    key: const Key('welcome-explore-demo'),
+                    onPressed: () => ref
+                        .read(appModeControllerProvider.notifier)
+                        .enterDemo(),
+                    child: Text(l10n.exploreDemo),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 24),
-            FilledButton(
-              key: const Key('welcome-start-fresh'),
-              onPressed: () => ref
-                  .read(settingsControllerProvider.notifier)
-                  .change((s) => s.copyWith(onboardingCompleted: true)),
-              child: Text(l10n.startFresh),
-            ),
-            const SizedBox(height: 12),
-            Semantics(
-              identifier: 'welcome-explore-demo',
-              child: OutlinedButton(
-                key: const Key('welcome-explore-demo'),
-                onPressed: () =>
-                    ref.read(appModeControllerProvider.notifier).enterDemo(),
-                child: Text(l10n.exploreDemo),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
