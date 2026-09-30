@@ -24,7 +24,8 @@ class MockTransactionRepository implements TransactionRepository {
 
   List<MoneyTransaction> _between(LocalDate? from, LocalDate? toExclusive) {
     final list =
-        _store.transactions
+        // Reversed so that ties keep the newest insertion first, like Drift.
+        _store.transactions.reversed
             .where(
               (t) =>
                   t.deletedAt == null &&
