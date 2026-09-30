@@ -5,9 +5,9 @@
 
 ## Avance
 
-`████▒░░░░░░░░░` 4/14 fases terminadas (29 %)
+`█████░░░░░░░░░` 5/14 fases terminadas (36 %)
 
-**Fase actual:** Fase 05 · Modo demo (🚧 en progreso)
+**Fase actual:** ninguna — la siguiente es la Fase 06 · Onboarding y categorías
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -19,7 +19,7 @@
 | 02 | Core | `feat/fase-02-core` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 03 | Dominio | `feat/fase-03-dominio` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 05 | Modo demo | `feat/fase-05-modo-demo` | 🚧 En progreso | 2026-09-29 | — |
+| 05 | Modo demo | `feat/fase-05-modo-demo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ⏳ Pendiente | — | — |
 | 07 | Movimientos | `feat/fase-07-movimientos` | ⏳ Pendiente | — | — |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ⏳ Pendiente | — | — |
@@ -61,6 +61,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 05 · Modo demo — 2026-09-29
+- **Hecho:** `MockDataStore` (con streams que emulan a Drift), `MockCategoryRepository`, `MockTransactionRepository`, `MockBudgetRepository`, `MockLocalStore`; `DemoDataset` (patrón 4.1); providers de repositorios y ajustes que cambian según `AppMode` (`demoDataStore` y `demoSettingsRepository` se invalidan al entrar y salir del demo); `DemoBanner` en `MaterialApp.builder`; botón *Explore demo* en la bienvenida provisional; textos l10n. Suites de contrato compartidas (categorías, movimientos, presupuestos, `LocalStore`) ejecutadas contra Drift y mock; tests del dataset (4 "hoy"), providers y banner (238 tests). `./tool/check.sh` pasa. Verificado en el emulador Android (emulator-5554) sin `.env.json`: Welcome -> *Explore demo* -> banner en las 4 tabs -> *Exit demo* -> Welcome.
+- **PR:** ver historial de GitHub (`feat: phase 05 - demo mode`).
+- **Decisiones:** ver tabla de desviaciones.
+- **Pendientes:** la prueba con modo avión no se hizo (el demo no usa red: solo mocks en memoria); repetirla en la verificación manual de la fase 13.
 
 ### Fase 04 · Persistencia Drift — 2026-09-29
 - **Hecho:** `AppDatabase` v1 (`categories`, `transactions`, `budgets`, `sync_state`) con índices únicos parciales, FKs activas y conversores `LocalDate`/`YearMonth`; `storage_guard.dart` (`guardStorage`, `guardStorageStream`, `mapStorageError`); mappers y repositorios `DriftCategoryRepository`, `DriftTransactionRepository`, `DriftBudgetRepository`, `DriftLocalStore`; providers de repositorios, `appDatabase` y casos de uso (`use_case_providers.dart`); snapshot `drift_schemas/centavo/drift_schema_v1.json`; tests con Drift en memoria (167 tests en total). `./tool/check.sh` pasa.
@@ -135,6 +141,11 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 04 | `DriftCategoryRepository.update` solo comprueba duplicado si la categoría está activa (no archivada); persiste solo nombre, icono, color y `updatedAt`. | Coherente con el índice único parcial (solo activas) y con que el tipo no puede cambiar. |
 | 2026-09-29 | 04 | `softDelete`/`archive` de categoría lanzan `NotFoundError` si no existe o ya está borrada; `softDelete`/`restore` de movimientos son idempotentes y no fallan si el id no existe. | La interfaz de dominio solo exige `NotFoundError` en `update`; en movimientos el *Undo* debe ser tolerante. |
 | 2026-09-29 | 04 | Test de `DriftRemoteException` real mediante `DriftIsolate.spawn(NativeDatabase.memory)` en vez de construir la excepción. | Su constructor es privado. |
+| 2026-09-29 | 05 | `demoSettingsRepository` usa `AppSettings(onboardingCompleted: true)` sin pasar `currencyCode`; un test comprueba que la moneda sea `DemoDataset.currencyCode`. | Lint `avoid_redundant_argument_values` (el valor por defecto ya es USD). |
+| 2026-09-29 | 05 | `app_mode_provider.dart` y `repository_providers.dart` se importan mutuamente (import circular); `AppModeController` no se movió. | Dart lo permite y el generador funciona; evita mover el controlador. |
+| 2026-09-29 | 05 | `MockDataStore.watch` usa un `StreamController` con `onListen` en vez de `async*`. | Evita perder cambios entre el primer valor y la suscripción. |
+| 2026-09-29 | 05 | `MockTransactionRepository` desempata por inserción más reciente primero. | Coincide con el orden observado en Drift cuando `createdAt` es igual (contrato compartido). |
+| 2026-09-29 | 05 | Los tests de solo-Drift (índice único parcial, `eraseAll` de las 4 tablas) quedan en sus archivos; el resto vive en `*_contract.dart`. | Paso 3 de la fase. |
 
 ## Bloqueos
 
