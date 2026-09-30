@@ -7,7 +7,7 @@
 
 `████████▒░░░░░` 8/14 fases terminadas (57 %)
 
-**Fase actual:** Fase 09 · Dashboard (🚧 en progreso)
+**Fase actual:** ninguna — la siguiente es la Fase 10 · Ajustes, bloqueo y CSV
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -23,7 +23,7 @@
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 07 | Movimientos | `feat/fase-07-movimientos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 09 | Dashboard | `feat/fase-09-dashboard` | 🚧 En progreso | 2026-09-29 | — |
+| 09 | Dashboard | `feat/fase-09-dashboard` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ⏳ Pendiente | — | — |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ⏳ Pendiente | — | — |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ⏳ Pendiente | — | — |
@@ -61,6 +61,13 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 09 · Dashboard — 2026-09-29
+- **Hecho:** `dashboard_providers` (`monthSummary`, `rangeTransactions`, `monthlyTrend`); `DashboardScreen` con selector de mes (máximo el mes actual) y cuatro secciones independientes (cada una con carga, vacío y error con *Retry*): `SummaryCards` (Ingresos/Gastos/Balance; mes vacío con CTA *Add transaction*), `ExpenseDonut` (top 5 + Others, leyenda, "No expenses this month", `Semantics` con resumen), `TrendBarChart` (6 meses, tooltip, mes seleccionado en negrita, "Not enough data yet") y `BudgetSummaryCard` (3 presupuestos más cercanos al límite, *See all*, *Set up budgets*). `EmptyState` gana `actionKey`. Textos l10n. Tests: providers, pantalla (CA1/CA2, balance negativo, solo ingresos, error aislado, tooltip), demo (6 entradas, 6 grupos, Coffee primero) y modo oscuro.
+- **PR:** ver historial de GitHub (`feat: phase 09 - dashboard`).
+- **Decisiones:** `fl_chart` 1.2.0 (`SideTitleWidget(meta:)`, `BarChart(data, duration:)`). Ver tabla de desviaciones.
+- **Verificación manual (emulador Android, demo):** claro y oscuro (capturas revisadas), tooltip de barras con pulsación larga, 360x640 dp sin overflows, cambio de mes. El mes vacío y el error de sección se cubrieron con tests de widgets, no a mano; repetir en la fase 13.
+- **Pendientes:** las claves `Semantics(identifier:)` de las tarjetas se validan con Maestro en la fase 13.
 
 ### Fase 08 · Presupuestos — 2026-09-29
 - **Hecho:** `budgets_providers` (`monthBudgets`, `budgetProgress`, `canCopyPreviousBudgets`, `activeBudget`, `BudgetFormController`, `CopyBudgetsController`), `BudgetsScreen` (selector con máximo mes actual + 1, tarjeta resumen con "Unbudgeted spending", tarjetas por categoría con barra, color y etiqueta de estado, sección "Not budgeted", estado vacío con *Copy from previous month*, skeleton y error con *Retry*), `BudgetFormScreen` (fijar, editar, quitar con confirmación, "Spent so far", estado "not found"), ruta `/budgets/edit` y `Routes.budgetEditFor`; textos l10n. Tests de pantalla, formulario, demo y reactividad (`./tool/check.sh` pasa, 288 tests). Verificado en emulador Android (emulator-5554, modo oscuro): Food = 600 -> gasto 450 (*On track*) -> +100 (*Near limit*) -> mes siguiente -> *Copy from previous month* ("Copied 1 budget"); en demo, Transport y Coffee *Over budget* y Entertainment *Near limit*.
@@ -174,6 +181,10 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 07 | `pumpCentavo` acepta `overrides`; `MoneyText` gana `signed`. | Test del error del stream y signo `+` en ingresos. |
 | 2026-09-29 | 08 | `BudgetFormScreen.month` es `YearMonth?` (null = mes malformado en la URL); el parseo con `try/catch` vive en el router. | Permite mostrar el estado "not found" sin lanzar en el builder. |
 | 2026-09-29 | 08 | `app_smoke_test` pasa a `testCentavo` y comprueba la pantalla de Budgets en vez de "Coming soon". | El placeholder desapareció; la pantalla real usa streams de Drift (timers pendientes). |
+| 2026-09-29 | 09 | La leyenda de la dona muestra "Others" para cualquier slice sin categoría (no distingue "Unknown category"). | `GetMonthSummary` devuelve `categoryId` nulo tanto para "Others" como para categorías inexistentes. |
+| 2026-09-29 | 09 | Los tests de providers usan Drift en memoria en vez de repos mock; el demo se prueba aparte. | El helper `pumpCentavo` ya cubre Drift; el mock queda probado por `dashboard_demo_test`. |
+| 2026-09-29 | 09 | `app_smoke_test` y `onboarding_flow_test` pasan a `testCentavo`. | El Dashboard ahora usa streams de Drift (timers pendientes). |
+| 2026-09-29 | 09 | El porcentaje de la leyenda se muestra como "34 %" con l10n `percentValue` y el gráfico de barras solo pinta el tramo de 220 dp cuando hay datos. | Evita texto suelto en widgets y overflow del estado de error. |
 
 ## Bloqueos
 
