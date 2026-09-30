@@ -5,9 +5,9 @@
 
 ## Avance
 
-`██████░░░░░░░░` 6/14 fases terminadas (43 %)
+`██████▒░░░░░░░` 6/14 fases terminadas (43 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 07 · Movimientos
+**Fase actual:** Fase 07 · Movimientos (en progreso)
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -21,7 +21,7 @@
 | 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 07 | Movimientos | `feat/fase-07-movimientos` | ⏳ Pendiente | — | — |
+| 07 | Movimientos | `feat/fase-07-movimientos` | 🚧 En progreso | 2026-09-29 | — |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ⏳ Pendiente | — | — |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ⏳ Pendiente | — | — |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ⏳ Pendiente | — | — |
