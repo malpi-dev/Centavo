@@ -5,9 +5,9 @@
 
 ## Avance
 
-`████████░░░░░░` 8/14 fases terminadas (57 %)
+`████████▒░░░░░` 8/14 fases terminadas (57 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 09 · Dashboard
+**Fase actual:** Fase 09 · Dashboard (🚧 en progreso)
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -23,7 +23,7 @@
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 07 | Movimientos | `feat/fase-07-movimientos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 09 | Dashboard | `feat/fase-09-dashboard` | ⏳ Pendiente | — | — |
+| 09 | Dashboard | `feat/fase-09-dashboard` | 🚧 En progreso | 2026-09-29 | — |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ⏳ Pendiente | — | — |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ⏳ Pendiente | — | — |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ⏳ Pendiente | — | — |
