@@ -9,8 +9,12 @@ import 'package:centavo/features/budgets/presentation/budgets_screen.dart';
 import 'package:centavo/features/categories/presentation/categories_screen.dart';
 import 'package:centavo/features/categories/presentation/category_form_screen.dart';
 import 'package:centavo/features/dashboard/presentation/dashboard_screen.dart';
+import 'package:centavo/features/export/presentation/export_screen.dart';
 import 'package:centavo/features/onboarding/presentation/currency_screen.dart';
 import 'package:centavo/features/onboarding/presentation/welcome_screen.dart';
+import 'package:centavo/features/security/presentation/lock_controller.dart';
+import 'package:centavo/features/security/presentation/lock_screen.dart';
+import 'package:centavo/features/settings/presentation/about_screen.dart';
 import 'package:centavo/features/settings/presentation/settings_controller.dart';
 import 'package:centavo/features/settings/presentation/settings_screen.dart';
 import 'package:centavo/features/transactions/presentation/transaction_form_screen.dart';
@@ -39,6 +43,7 @@ GoRouter appRouter(Ref ref) {
   ref
     ..listen(settingsControllerProvider, (_, _) => refresh.value++)
     ..listen(appModeControllerProvider, (_, _) => refresh.value++)
+    ..listen(lockControllerProvider, (_, _) => refresh.value++)
     ..onDispose(refresh.dispose);
 
   final router = GoRouter(
@@ -49,8 +54,12 @@ GoRouter appRouter(Ref ref) {
       location: state.uri.path,
       settings: ref.read(settingsControllerProvider),
       mode: ref.read(appModeControllerProvider),
+      isLocked: ref.read(lockControllerProvider),
+      fullLocation: state.uri.toString(),
+      lockFrom: state.uri.queryParameters['from'],
     ),
     routes: [
+      GoRoute(path: Routes.lock, builder: (_, _) => const LockScreen()),
       GoRoute(
         path: Routes.welcome,
         builder: (_, _) => const WelcomeScreen(),
@@ -143,6 +152,14 @@ GoRouter appRouter(Ref ref) {
                         ),
                       ),
                     ],
+                  ),
+                  GoRoute(
+                    path: 'export',
+                    builder: (_, _) => const ExportScreen(),
+                  ),
+                  GoRoute(
+                    path: 'about',
+                    builder: (_, _) => const AboutScreen(),
                   ),
                 ],
               ),

@@ -5,9 +5,9 @@
 
 ## Avance
 
-`████████▒░░░░░` 8/14 fases terminadas (57 %)
+`██████████░░░░` 10/14 fases terminadas (71 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 10 · Ajustes, bloqueo y CSV
+**Fase actual:** ninguna — la siguiente es la Fase 11 · Backend Supabase
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -24,7 +24,7 @@
 | 07 | Movimientos | `feat/fase-07-movimientos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 08 | Presupuestos | `feat/fase-08-presupuestos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ⏳ Pendiente | — | — |
+| 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ⏳ Pendiente | — | — |
 | 12 | Respaldo | `feat/fase-12-respaldo` | ⏳ Pendiente | — | — |
 | 13 | Pulido y E2E | `feat/fase-13-pulido-y-e2e` | ⏳ Pendiente | — | — |
@@ -61,6 +61,13 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 10 · Ajustes, bloqueo y CSV — 2026-09-29
+- **Hecho:** dominio/datos de `security` (`BiometricRepository` con `LocalAuthBiometricRepository` + mock, `SecureWindowService` con method channel + noop, `FLAG_SECURE` en `MainActivity.kt`); `LockController` (bloqueo en arranque, tras >= 30 s en segundo plano, `confirmIdentity` para confirmar el activado sin re-bloquear, sincroniza `FLAG_SECURE` con el ajuste); redirect de bloqueo en `appRedirect` (`/lock?from=`) y ruta `/lock`; `LockScreen`; `SettingsScreen` completa (tema, moneda con advertencia, App lock, categorías, exportar, borrar datos con doble confirmación, Exit demo, About); `FileShareCsvService` + `MockCsvShareService`, `ExportScreen`/`ExportController`; `AboutScreen` (versión con `package_info_plus`, URL copiable, licencias, licencias OFL de las fuentes registradas en `main.dart`). Textos l10n. Tests: lock controller, redirect, repositorio biométrico (todos los códigos), servicio CSV, ajustes, borrar datos, exportar y flujo de bloqueo (`./tool/check.sh` pasa, 355 tests).
+- **PR:** ver historial de GitHub (`feat: phase 10 - settings, app lock and csv export`).
+- **Decisiones:** `package_info_plus` añadido (versión en About). Ver tabla de desviaciones.
+- **Verificación manual (emulador Android emulator-5554, PIN 1234, sin huella enrolada):** el switch *App lock* pide credencial del dispositivo y al activarlo la ventana pasa a `SECURE` (capturas negras, comprobado con `dumpsys window`); en segundo plano 10 s no bloquea y 35 s sí (aparece `BiometricPrompt`); arranque en frío bloquea; exportar mes vacío muestra "Nothing to export for this range."; exportar en demo abre la hoja de compartir con `centavo-transactions-YYYY-MM.csv`; *Erase all local data* con doble confirmación vuelve a Welcome.
+- **Pendientes:** no se probó huella real (solo PIN como credencial), ni el abrir el CSV en Google Sheets (sin cuenta de Google en el emulador) ni el estado "sin bloqueo de pantalla" a mano (cubierto con test de widget); 🙋 repetir en teléfono real en la fase 13. La miniatura de *recientes* se dedujo del flag `SECURE`, no se abrió la pantalla de recientes.
 
 ### Fase 09 · Dashboard — 2026-09-29
 - **Hecho:** `dashboard_providers` (`monthSummary`, `rangeTransactions`, `monthlyTrend`); `DashboardScreen` con selector de mes (máximo el mes actual) y cuatro secciones independientes (cada una con carga, vacío y error con *Retry*): `SummaryCards` (Ingresos/Gastos/Balance; mes vacío con CTA *Add transaction*), `ExpenseDonut` (top 5 + Others, leyenda, "No expenses this month", `Semantics` con resumen), `TrendBarChart` (6 meses, tooltip, mes seleccionado en negrita, "Not enough data yet") y `BudgetSummaryCard` (3 presupuestos más cercanos al límite, *See all*, *Set up budgets*). `EmptyState` gana `actionKey`. Textos l10n. Tests: providers, pantalla (CA1/CA2, balance negativo, solo ingresos, error aislado, tooltip), demo (6 entradas, 6 grupos, Coffee primero) y modo oscuro.
@@ -185,6 +192,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 09 | Los tests de providers usan Drift en memoria en vez de repos mock; el demo se prueba aparte. | El helper `pumpCentavo` ya cubre Drift; el mock queda probado por `dashboard_demo_test`. |
 | 2026-09-29 | 09 | `app_smoke_test` y `onboarding_flow_test` pasan a `testCentavo`. | El Dashboard ahora usa streams de Drift (timers pendientes). |
 | 2026-09-29 | 09 | El porcentaje de la leyenda se muestra como "34 %" con l10n `percentValue` y el gráfico de barras solo pinta el tramo de 220 dp cuando hay datos. | Evita texto suelto en widgets y overflow del estado de error. |
+| 2026-09-29 | 10 | `secureWindowServiceProvider` usa siempre el method channel (no noop en demo); `NoopSecureWindowService` solo en tests. | `FLAG_SECURE` pertenece a la ventana real; con noop en demo, salir del bloqueo dejaba el flag activo. |
+| 2026-09-29 | 10 | `FLAG_SECURE` se sincroniza dentro de `LockController.build` (no en `CentavoApp` con `fireImmediately`). | Riverpod 3 no ofrece `fireImmediately` en `ref.listen` ni `.select` en el provider; así es además testeable. |
+| 2026-09-29 | 10 | `LockController.confirmIdentity` (nuevo) sirve para confirmar el activado del lock; `appRedirect` recibe además `fullLocation` y `lockFrom`. | El diálogo del sistema pausa la app y no debe re-bloquear; el redirect debe conservar la query de la ruta de origen. |
+| 2026-09-29 | 10 | `pumpCentavo`/`testOverrides` aceptan `biometric`, `secureWindow` y `csvShare`. | Evita sobrescribir dos veces el mismo provider. |
+| 2026-09-29 | 10 | En tests con Drift, las escrituras de categorías y movimientos van en `runRepo` separados. | Dos escrituras en un mismo `runRepo` dejaban el test colgado. |
+| 2026-09-29 | 10 | `persistAcrossBackgrounding: true` en `local_auth` 3.x (equivalente a `stickyAuth`); errores vía `LocalAuthException` + `LocalAuthExceptionCode`. | API de la versión instalada. |
 
 ## Bloqueos
 
