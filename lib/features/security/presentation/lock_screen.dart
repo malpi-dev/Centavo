@@ -90,6 +90,18 @@ class _LockScreenState extends ConsumerState<LockScreen> {
                       child: Text(l10n.lockUnlock),
                     ),
                   ),
+                  if (_busy) ...[
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: CircularProgressIndicator(
+                        key: const Key('lock-waiting'),
+                        strokeWidth: 2,
+                        color: foreground,
+                      ),
+                    ),
+                  ],
                   if (_error != null) ...[
                     const SizedBox(height: 16),
                     Text(

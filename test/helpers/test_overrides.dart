@@ -3,6 +3,7 @@ import 'package:centavo/core/domain/clock.dart';
 import 'package:centavo/features/backup/data/mock_auth_repository.dart';
 import 'package:centavo/features/backup/data/mock_backup_repository.dart';
 import 'package:centavo/features/export/data/mock_csv_share_service.dart';
+import 'package:centavo/features/export/domain/csv_share_service.dart';
 import 'package:centavo/features/security/data/mock_biometric_repository.dart';
 import 'package:centavo/features/security/data/noop_secure_window_service.dart';
 import 'package:centavo/features/settings/data/in_memory_settings_repository.dart';
@@ -15,7 +16,7 @@ List<Override> testOverrides({
   Clock? clock,
   MockBiometricRepository? biometric,
   NoopSecureWindowService? secureWindow,
-  MockCsvShareService? csvShare,
+  CsvShareService? csvShare,
   MockAuthRepository? auth,
   MockBackupRepository? cloud,
   bool? backupAvailable,
