@@ -9,6 +9,16 @@
   "cancel": "Cancel",
   "save": "Save",
   "delete": "Delete",
+  "categoryColorOption": "Color {number}",
+  "@categoryColorOption": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "previousMonth": "Previous month",
+  "nextMonth": "Next month",
   "undo": "Undo",
   "loading": "Loading…",
   "errorNotFound": "This item no longer exists.",

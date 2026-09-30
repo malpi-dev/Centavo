@@ -1,4 +1,5 @@
 import 'package:centavo/core/domain/year_month.dart';
+import 'package:centavo/core/presentation/l10n_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -25,6 +26,7 @@ class MonthSelector extends StatelessWidget {
       children: [
         IconButton(
           key: const Key('month-prev'),
+          tooltip: context.l10n.previousMonth,
           icon: const Icon(Icons.chevron_left),
           onPressed: () => onChanged(month.previous),
         ),
@@ -35,6 +37,7 @@ class MonthSelector extends StatelessWidget {
         ),
         IconButton(
           key: const Key('month-next'),
+          tooltip: context.l10n.nextMonth,
           icon: const Icon(Icons.chevron_right),
           onPressed: canGoNext ? () => onChanged(month.next) : null,
         ),

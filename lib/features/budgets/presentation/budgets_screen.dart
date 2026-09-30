@@ -260,6 +260,7 @@ class _BudgetLineCard extends StatelessWidget {
                   CategoryAvatar(
                     icon: line.category.icon,
                     color: line.category.color,
+                    label: line.category.name,
                     size: 36,
                   ),
                   const SizedBox(width: 12),
@@ -323,7 +324,11 @@ class _NotBudgetedRow extends StatelessWidget {
     return ListTile(
       key: Key('not-budgeted-${category.id}'),
       contentPadding: EdgeInsets.zero,
-      leading: CategoryAvatar(icon: category.icon, color: category.color),
+      leading: CategoryAvatar(
+        icon: category.icon,
+        color: category.color,
+        label: category.name,
+      ),
       title: Text(category.name),
       trailing: Semantics(
         identifier: 'budget-set-${category.id}',

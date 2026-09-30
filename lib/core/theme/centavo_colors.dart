@@ -41,6 +41,9 @@ class CentavoColors extends ThemeExtension<CentavoColors> {
   final Color chartGrid;
   final bool isDark;
 
+  /// Foreground for content drawn on top of a category color.
+  Color get onCategory => const Color(0xFFFFFFFF);
+
   /// Returns the stored (light) ARGB as is in the light theme and the dark
   /// variant of the same palette index in the dark theme.
   Color category(int storedArgb) {

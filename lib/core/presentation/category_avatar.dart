@@ -6,10 +6,17 @@ import 'package:flutter/material.dart';
 /// Null [icon] or [color] (the "Others" slice, a missing category) renders a
 /// neutral placeholder.
 class CategoryAvatar extends StatelessWidget {
-  const CategoryAvatar({this.icon, this.color, this.size = 40, super.key});
+  const CategoryAvatar({
+    this.icon,
+    this.color,
+    this.label,
+    this.size = 40,
+    super.key,
+  });
 
   final String? icon;
   final int? color;
+  final String? label;
   final double size;
 
   @override
@@ -19,7 +26,7 @@ class CategoryAvatar extends StatelessWidget {
     final resolved = (icon == null || color == null)
         ? Theme.of(context).colorScheme.onSurfaceVariant
         : context.colors.category(color);
-    return Container(
+    final avatar = Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
@@ -32,5 +39,8 @@ class CategoryAvatar extends StatelessWidget {
         size: size * 0.55,
       ),
     );
+    final label = this.label;
+    if (label == null) return avatar;
+    return Semantics(label: label, image: true, child: avatar);
   }
 }

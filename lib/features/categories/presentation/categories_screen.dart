@@ -102,7 +102,11 @@ class _CategoryTile extends StatelessWidget {
     final theme = Theme.of(context);
     return ListTile(
       key: Key('category-${category.id}'),
-      leading: CategoryAvatar(icon: category.icon, color: category.color),
+      leading: CategoryAvatar(
+        icon: category.icon,
+        color: category.color,
+        label: category.name,
+      ),
       title: Text(category.name),
       trailing: category.isDefault
           ? Chip(
