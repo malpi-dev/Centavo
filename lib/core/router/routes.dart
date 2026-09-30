@@ -1,3 +1,5 @@
+import 'package:centavo/core/domain/year_month.dart';
+
 abstract final class Routes {
   static const welcome = '/welcome';
   static const welcomeCurrency = '/welcome/currency';
@@ -8,6 +10,8 @@ abstract final class Routes {
   static String transactionEdit(String id) => '/transactions/$id';
   static const budgets = '/budgets';
   static const budgetEdit = '/budgets/edit';
+  static String budgetEditFor(String categoryId, YearMonth month) =>
+      '$budgetEdit?category=$categoryId&month=${month.toIso()}';
   static const settings = '/settings';
   static const categories = '/settings/categories';
   static const categoryNew = '/settings/categories/new';
