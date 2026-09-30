@@ -4,4 +4,6 @@
          to allow setting breakpoints, to provide hot reload, etc.
     -->
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Debug only: allows plain HTTP to a local Supabase (http://10.0.2.2:54321) from the emulator. -->
+    <application android:usesCleartextTraffic="true"/>
 </manifest>

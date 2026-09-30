@@ -6,6 +6,8 @@
 	<true/>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Centavo uses Face ID to keep your finances private.</string>
 	<key>CFBundleDisplayName</key>
 	<string>Centavo</string>
 	<key>CFBundleExecutable</key>
