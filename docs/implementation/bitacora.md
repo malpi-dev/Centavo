@@ -5,9 +5,9 @@
 
 ## Avance
 
-`███▒░░░░░░░░░░` 3/14 fases terminadas (21 %)
+`████░░░░░░░░░░` 4/14 fases terminadas (29 %)
 
-**Fase actual:** Fase 04 · Persistencia Drift (en progreso)
+**Fase actual:** ninguna — la siguiente es la Fase 05 · Modo demo
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -18,7 +18,7 @@
 | 01 | Andamiaje | `feat/fase-01-andamiaje` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 02 | Core | `feat/fase-02-core` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 03 | Dominio | `feat/fase-03-dominio` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | 🚧 En progreso | 2026-09-29 | — |
+| 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ⏳ Pendiente | — | — |
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ⏳ Pendiente | — | — |
 | 07 | Movimientos | `feat/fase-07-movimientos` | ⏳ Pendiente | — | — |
@@ -43,6 +43,7 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | go_router | 17.5.0 |
 | freezed / freezed_annotation | 4.0.0-dev.3 (prerelease) / 3.1.0 |
 | drift / drift_flutter / drift_dev | 2.35.0 / 0.3.1 / 2.35.0 |
+| sqlite3 (dependencia directa desde la fase 04) | 3.5.2 |
 | supabase_flutter | 2.17.2 |
 | fl_chart | 1.2.0 |
 | local_auth | 3.0.2 |
@@ -60,6 +61,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 04 · Persistencia Drift — 2026-09-29
+- **Hecho:** `AppDatabase` v1 (`categories`, `transactions`, `budgets`, `sync_state`) con índices únicos parciales, FKs activas y conversores `LocalDate`/`YearMonth`; `storage_guard.dart` (`guardStorage`, `guardStorageStream`, `mapStorageError`); mappers y repositorios `DriftCategoryRepository`, `DriftTransactionRepository`, `DriftBudgetRepository`, `DriftLocalStore`; providers de repositorios, `appDatabase` y casos de uso (`use_case_providers.dart`); snapshot `drift_schemas/centavo/drift_schema_v1.json`; tests con Drift en memoria (167 tests en total). `./tool/check.sh` pasa.
+- **PR:** ver historial de GitHub (`feat: phase 04 - drift persistence`).
+- **Decisiones:** `sqlite3` añadido como dependencia directa (`^3.5.2`) para reconocer `SqliteException` sin violar `depend_on_referenced_packages`. Más en la tabla de desviaciones.
+- **Pendientes:** ninguno. `use_case_providers.dart` y los providers Drift aún no se consumen desde la UI (fases 05+).
 
 ### Fase 03 · Dominio — 2026-09-29
 - **Hecho:** `TransactionType` y `LocalStore` en `core/domain`; modelos freezed (`Category`, `MoneyTransaction`, `TransactionDraft`, `Budget`, `BudgetLine`, `BudgetProgressReport`, `CategorySlice`, `MonthSummary`, `MonthTotals`); interfaces `CategoryRepository`, `TransactionRepository`, `BudgetRepository`, `CsvShareService`; categorías por defecto con UUID fijos; validadores de categoría, movimiento y presupuesto; casos de uso `SeedDefaultCategories`, `DeleteOrArchiveCategory`, `GetBudgetProgress` (estados con enteros), `CopyBudgetsFromPreviousMonth`, `GetMonthSummary`, `GetMonthlyTrend`, `ExportTransactionsCsv` + `buildTransactionsCsv`; `test/helpers/builders.dart` y tests de todos los archivos de la tabla (116 tests en total). `./tool/check.sh` pasa.
@@ -121,6 +128,13 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 03 | `Category`, `Budget`, `MoneyTransaction`, etc. sitúan los parámetros requeridos antes de los opcionales; `CategorySlice` pone `amount`/`basisPoints` primero. | Lint `always_put_required_named_parameters_first`; el orden no afecta a la API. |
 | 2026-09-29 | 03 | Se añadió `budget_validator_test.dart` (no estaba en la tabla de tests). | Cubre `validateBudgetForm`. |
 | 2026-09-29 | 03 | `CsvShareService` lleva `// ignore: one_member_abstracts` con justificación. | Puerto con un único método, implementado por el adaptador de plataforma. |
+| 2026-09-29 | 04 | Los constructores de los repositorios Drift usan `required this._clock, required this._ids`. | Lint `prefer_initializing_formals`; API pública idéntica. |
+| 2026-09-29 | 04 | `AppDatabase(super.e)`: el parámetro del constructor se llama `e` (nombre del super). `DriftRemoteException` se importa de `package:drift/isolate.dart` (`remote.dart` está marcado experimental). | Lints `matching_super_parameters` y `experimental_member_use`. |
+| 2026-09-29 | 04 | Las tablas con `check(amountMinor.isBiggerThanValue(0))` llevan `// ignore: recursive_getters` justificado. | Patrón documentado de Drift; el lint es un falso positivo. |
+| 2026-09-29 | 04 | Se añade `guardStorageStream` (paso 5 sugería `handleError` inline). Los `DomainError` que pasen por el stream se relanzan tal cual. | Reutilizado por los tres repositorios en `watch…`. |
+| 2026-09-29 | 04 | `DriftCategoryRepository.update` solo comprueba duplicado si la categoría está activa (no archivada); persiste solo nombre, icono, color y `updatedAt`. | Coherente con el índice único parcial (solo activas) y con que el tipo no puede cambiar. |
+| 2026-09-29 | 04 | `softDelete`/`archive` de categoría lanzan `NotFoundError` si no existe o ya está borrada; `softDelete`/`restore` de movimientos son idempotentes y no fallan si el id no existe. | La interfaz de dominio solo exige `NotFoundError` en `update`; en movimientos el *Undo* debe ser tolerante. |
+| 2026-09-29 | 04 | Test de `DriftRemoteException` real mediante `DriftIsolate.spawn(NativeDatabase.memory)` en vez de construir la excepción. | Su constructor es privado. |
 
 ## Bloqueos
 
