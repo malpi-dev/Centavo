@@ -1,9 +1,11 @@
 import 'package:centavo/app.dart';
 import 'package:centavo/core/database/app_database.dart';
+import 'package:centavo/core/di/provider_retry.dart';
 import 'package:centavo/core/di/repository_providers.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'test_database.dart';
@@ -13,6 +15,7 @@ import 'test_overrides.dart';
 Future<({AppDatabase db, ProviderContainer container})> pumpCentavo(
   WidgetTester tester, {
   AppSettings settings = const AppSettings(),
+  List<Override> overrides = const [],
 }) async {
   tester.view
     ..physicalSize = const Size(800, 1600)
@@ -22,9 +25,11 @@ Future<({AppDatabase db, ProviderContainer container})> pumpCentavo(
   addTearDown(db.close);
   await tester.pumpWidget(
     ProviderScope(
+      retry: noAutomaticRetry,
       overrides: [
         ...testOverrides(settings: settings),
         appDatabaseProvider.overrideWithValue(db),
+        ...overrides,
       ],
       child: const CentavoApp(),
     ),
