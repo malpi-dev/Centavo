@@ -1,3 +1,4 @@
+import 'package:centavo/core/config/env.dart';
 import 'package:centavo/core/database/app_database.dart';
 import 'package:centavo/core/database/drift_local_store.dart';
 import 'package:centavo/core/di/app_mode_provider.dart';
@@ -5,7 +6,17 @@ import 'package:centavo/core/domain/app_mode.dart';
 import 'package:centavo/core/domain/clock.dart';
 import 'package:centavo/core/domain/id_generator.dart';
 import 'package:centavo/core/domain/local_store.dart';
+import 'package:centavo/core/supabase/supabase_client_provider.dart';
 import 'package:centavo/core/utils/uuid_id_generator.dart';
+import 'package:centavo/features/backup/data/drift_sync_state_repository.dart';
+import 'package:centavo/features/backup/data/mock_auth_repository.dart';
+import 'package:centavo/features/backup/data/mock_backup_repository.dart';
+import 'package:centavo/features/backup/data/mock_sync_state_repository.dart';
+import 'package:centavo/features/backup/data/supabase_auth_repository.dart';
+import 'package:centavo/features/backup/data/supabase_backup_repository.dart';
+import 'package:centavo/features/backup/domain/auth_repository.dart';
+import 'package:centavo/features/backup/domain/backup_repository.dart';
+import 'package:centavo/features/backup/domain/sync_state_repository.dart';
 import 'package:centavo/features/budgets/data/drift_budget_repository.dart';
 import 'package:centavo/features/budgets/data/mock_budget_repository.dart';
 import 'package:centavo/features/budgets/domain/budget_repository.dart';
@@ -155,3 +166,51 @@ SecureWindowService secureWindowService(Ref ref) =>
 /// and shows the feature. Tests override it with the mock.
 @Riverpod(keepAlive: true)
 CsvShareService csvShareService(Ref ref) => FileShareCsvService();
+
+/// In-memory "cloud" of the demo: fresh per demo session, no latency in tests
+/// (overridden there).
+@Riverpod(keepAlive: true)
+MockAuthRepository demoAuthRepository(Ref ref) {
+  final repo = MockAuthRepository();
+  ref.onDispose(repo.dispose);
+  return repo;
+}
+
+@Riverpod(keepAlive: true)
+MockBackupRepository demoBackupRepository(Ref ref) => MockBackupRepository();
+
+/// Real implementation only when the app was built with a backup
+/// configuration; the UI never reads this provider otherwise (guarded by
+/// `isBackupAvailableProvider`).
+@Riverpod(keepAlive: true)
+AuthRepository authRepository(Ref ref) =>
+    switch (ref.watch(appModeControllerProvider)) {
+      AppMode.local =>
+        Env.isBackupEnabled
+            ? SupabaseAuthRepository(ref.watch(supabaseClientProvider))
+            : throw StateError('Backup is disabled'),
+      AppMode.demo => ref.watch(demoAuthRepositoryProvider),
+    };
+
+@Riverpod(keepAlive: true)
+BackupRepository backupRepository(Ref ref) =>
+    switch (ref.watch(appModeControllerProvider)) {
+      AppMode.local =>
+        Env.isBackupEnabled
+            ? SupabaseBackupRepository(ref.watch(supabaseClientProvider))
+            : throw StateError('Backup is disabled'),
+      AppMode.demo => ref.watch(demoBackupRepositoryProvider),
+    };
+
+@Riverpod(keepAlive: true)
+SyncStateRepository syncStateRepository(Ref ref) =>
+    switch (ref.watch(appModeControllerProvider)) {
+      AppMode.local => DriftSyncStateRepository(ref.watch(appDatabaseProvider)),
+      AppMode.demo => MockSyncStateRepository(ref.watch(demoDataStoreProvider)),
+    };
+
+/// Backup is visible in demo (simulated) and in local mode only when the app
+/// has a Supabase configuration.
+@Riverpod(keepAlive: true)
+bool isBackupAvailable(Ref ref) =>
+    ref.watch(appModeControllerProvider) == AppMode.demo || Env.isBackupEnabled;

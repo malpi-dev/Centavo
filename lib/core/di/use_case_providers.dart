@@ -1,4 +1,6 @@
 import 'package:centavo/core/di/repository_providers.dart';
+import 'package:centavo/features/backup/domain/restore_backup.dart';
+import 'package:centavo/features/backup/domain/run_backup.dart';
 import 'package:centavo/features/budgets/domain/copy_budgets_from_previous_month.dart';
 import 'package:centavo/features/categories/domain/delete_or_archive_category.dart';
 import 'package:centavo/features/categories/domain/seed_default_categories.dart';
@@ -37,5 +39,26 @@ CopyBudgetsFromPreviousMonth copyBudgetsFromPreviousMonth(Ref ref) =>
 ExportTransactionsCsv exportTransactionsCsv(Ref ref) => ExportTransactionsCsv(
   transactions: ref.watch(transactionRepositoryProvider),
   categories: ref.watch(categoryRepositoryProvider),
+  clock: ref.watch(clockProvider),
+);
+
+@Riverpod(keepAlive: true)
+RunBackup runBackup(Ref ref) => RunBackup(
+  backup: ref.watch(backupRepositoryProvider),
+  categories: ref.watch(categoryRepositoryProvider),
+  budgets: ref.watch(budgetRepositoryProvider),
+  transactions: ref.watch(transactionRepositoryProvider),
+  syncState: ref.watch(syncStateRepositoryProvider),
+  clock: ref.watch(clockProvider),
+);
+
+@Riverpod(keepAlive: true)
+RestoreBackup restoreBackup(Ref ref) => RestoreBackup(
+  backup: ref.watch(backupRepositoryProvider),
+  categories: ref.watch(categoryRepositoryProvider),
+  budgets: ref.watch(budgetRepositoryProvider),
+  transactions: ref.watch(transactionRepositoryProvider),
+  syncState: ref.watch(syncStateRepositoryProvider),
+  localStore: ref.watch(localStoreProvider),
   clock: ref.watch(clockProvider),
 );

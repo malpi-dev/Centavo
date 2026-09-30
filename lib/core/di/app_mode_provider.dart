@@ -23,5 +23,7 @@ class AppModeController extends _$AppModeController {
 
   void _resetDemo() => ref
     ..invalidate(demoDataStoreProvider)
-    ..invalidate(demoSettingsRepositoryProvider);
+    ..invalidate(demoSettingsRepositoryProvider)
+    ..invalidate(demoAuthRepositoryProvider)
+    ..invalidate(demoBackupRepositoryProvider);
 }
