@@ -1,0 +1,6 @@
+tags:
+  # Needs a running local Supabase. Without SUPABASE_URL,
+  # SUPABASE_PUBLISHABLE_KEY and SUPABASE_SECRET_KEY in the environment the
+  # test skips itself, so a plain `flutter test` stays green. Run it with:
+  #   flutter test --tags supabase test/integration
+  supabase:

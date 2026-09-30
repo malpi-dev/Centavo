@@ -17,8 +17,9 @@ DomainError mapSupabaseError(Object error) {
   }
   if (error is PostgrestException) {
     final code = error.code ?? '';
-    final numeric = int.tryParse(code);
-    // 540 = paused project.
+    // Three digits = HTTP status (540 = paused project). SQLSTATE codes such
+    // as 23505 are five characters and must not match.
+    final numeric = code.length == 3 ? int.tryParse(code) : null;
     if (numeric != null && numeric >= 500) {
       return BackendUnavailableError(error);
     }

@@ -171,4 +171,59 @@ void main() {
       );
     });
   });
+
+  group('backup routes without a Supabase configuration', () {
+    test('are sent to settings once onboarded', () {
+      for (final location in [
+        Routes.backup,
+        Routes.backupSignIn,
+        Routes.backupVerify,
+      ]) {
+        expect(
+          appRedirect(
+            location: location,
+            settings: onboarded,
+            mode: AppMode.local,
+            isBackupAvailable: false,
+          ),
+          Routes.settings,
+        );
+      }
+    });
+
+    test('are sent to welcome before onboarding', () {
+      expect(
+        appRedirect(
+          location: Routes.backupSignIn,
+          settings: fresh,
+          mode: AppMode.local,
+          isBackupAvailable: false,
+        ),
+        Routes.welcome,
+      );
+    });
+
+    test('stay reachable when backup is available', () {
+      expect(
+        appRedirect(
+          location: Routes.backup,
+          settings: onboarded,
+          mode: AppMode.local,
+        ),
+        isNull,
+      );
+    });
+
+    test('other settings routes are untouched', () {
+      expect(
+        appRedirect(
+          location: Routes.export,
+          settings: onboarded,
+          mode: AppMode.local,
+          isBackupAvailable: false,
+        ),
+        isNull,
+      );
+    });
+  });
 }

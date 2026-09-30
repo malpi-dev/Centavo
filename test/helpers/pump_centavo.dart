@@ -2,6 +2,8 @@ import 'package:centavo/app.dart';
 import 'package:centavo/core/database/app_database.dart';
 import 'package:centavo/core/di/provider_retry.dart';
 import 'package:centavo/core/di/repository_providers.dart';
+import 'package:centavo/features/backup/data/mock_auth_repository.dart';
+import 'package:centavo/features/backup/data/mock_backup_repository.dart';
 import 'package:centavo/features/export/data/mock_csv_share_service.dart';
 import 'package:centavo/features/security/data/mock_biometric_repository.dart';
 import 'package:centavo/features/security/data/noop_secure_window_service.dart';
@@ -22,6 +24,9 @@ Future<({AppDatabase db, ProviderContainer container})> pumpCentavo(
   MockBiometricRepository? biometric,
   NoopSecureWindowService? secureWindow,
   MockCsvShareService? csvShare,
+  MockAuthRepository? auth,
+  MockBackupRepository? cloud,
+  bool? backupAvailable,
 }) async {
   tester.view
     ..physicalSize = const Size(800, 1600)
@@ -38,6 +43,9 @@ Future<({AppDatabase db, ProviderContainer container})> pumpCentavo(
           biometric: biometric,
           secureWindow: secureWindow,
           csvShare: csvShare,
+          auth: auth,
+          cloud: cloud,
+          backupAvailable: backupAvailable,
         ),
         appDatabaseProvider.overrideWithValue(db),
         ...overrides,

@@ -199,5 +199,102 @@ void runCategoryRepositoryContract(
       await repo.insertIfAbsent([aCategory(id: id, name: 'Back')]);
       expect(await repo.getAll(), isEmpty);
     });
+
+    group('backup sync', () {
+      final t0 = DateTime.utc(2026, 10, 1, 8);
+      final t1 = t0.add(const Duration(milliseconds: 1));
+      final later = DateTime.utc(2026, 10, 2);
+
+      test(
+        'changedSince(null) returns everything, even archived and deleted',
+        () async {
+          await repo.mergeFromBackup([
+            aCategory(id: 'a', name: 'A', updatedAt: t0),
+            aCategory(id: 'b', name: 'B', updatedAt: t1, archivedAt: t1),
+            aCategory(id: 'c', name: 'C', updatedAt: later, deletedAt: later),
+          ]);
+          final all = await repo.changedSince(null);
+          expect(all.map((c) => c.id), ['a', 'b', 'c']);
+          expect(all.last.isDeleted, isTrue);
+        },
+      );
+
+      test('changedSince is strict and keeps millisecond precision', () async {
+        await repo.mergeFromBackup([
+          aCategory(id: 'a', name: 'A', updatedAt: t0),
+          aCategory(id: 'b', name: 'B', updatedAt: t1),
+        ]);
+        expect((await repo.changedSince(t0)).map((c) => c.id), ['b']);
+        expect(await repo.changedSince(t1), isEmpty);
+      });
+
+      test(
+        'mergeFromBackup inserts unknown rows keeping their dates',
+        () async {
+          await repo.mergeFromBackup([
+            aCategory(id: 'a', name: 'A', createdAt: t0, updatedAt: later),
+          ]);
+          final stored = (await repo.changedSince(null)).single;
+          expect(stored.createdAt, t0);
+          expect(stored.updatedAt, later);
+        },
+      );
+
+      test('last write wins: the newer side is kept', () async {
+        await repo.mergeFromBackup([
+          aCategory(id: 'a', name: 'Old name', updatedAt: t0),
+          aCategory(id: 'keep', name: 'Keep local', updatedAt: later),
+        ]);
+        await repo.mergeFromBackup([
+          aCategory(id: 'a', name: 'New name', updatedAt: later),
+          aCategory(id: 'keep', name: 'Stale cloud', updatedAt: t0),
+        ]);
+        final byId = {
+          for (final c in await repo.changedSince(null)) c.id: c,
+        };
+        expect(byId['a']!.name, 'New name');
+        expect(byId['keep']!.name, 'Keep local');
+      });
+
+      test(
+        'mergeFromBackup never deletes rows that are not incoming',
+        () async {
+          final local = await make('Local only');
+          await repo.mergeFromBackup([aCategory(id: 'a', name: 'A')]);
+          expect(await repo.findById(local), isNotNull);
+        },
+      );
+
+      test('a name clash with another active category gets a suffix', () async {
+        await repo.mergeFromBackup([
+          aCategory(id: 'a', updatedAt: t0),
+          aCategory(id: 'b', name: 'food', updatedAt: t0),
+          aCategory(id: 'c', name: 'FOOD', updatedAt: t0),
+        ]);
+        final names = (await repo.changedSince(null)).map((c) => c.name);
+        expect(names, unorderedEquals(['Food', 'food 2', 'FOOD 3']));
+      });
+
+      test('the suffix fits in 30 characters', () async {
+        final long = 'A' * 30;
+        await repo.mergeFromBackup([
+          aCategory(id: 'a', name: long, updatedAt: t0),
+          aCategory(id: 'b', name: long, updatedAt: t0),
+        ]);
+        final names = (await repo.changedSince(null)).map((c) => c.name);
+        expect(names, contains('${'A' * 28} 2'));
+      });
+
+      test('a clash is ignored when the incoming row is archived', () async {
+        await repo.mergeFromBackup([
+          aCategory(id: 'a'),
+          aCategory(id: 'b', archivedAt: t0),
+        ]);
+        final byId = {
+          for (final c in await repo.changedSince(null)) c.id: c.name,
+        };
+        expect(byId['b'], 'Food');
+      });
+    });
   });
 }
