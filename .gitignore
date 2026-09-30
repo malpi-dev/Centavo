@@ -43,3 +43,17 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Centavo
+.env.json
+*.g.dart
+*.freezed.dart
+lib/l10n/app_localizations*.dart
+coverage/
+supabase/.temp/
+supabase/.branches/
+android/key.properties
+*.jks
+*.keystore
+*.apk
+*.aab
