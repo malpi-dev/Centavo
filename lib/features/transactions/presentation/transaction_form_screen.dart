@@ -408,6 +408,7 @@ class _CategoryPicker extends ConsumerWidget {
                     size: 24,
                   ),
                   label: Text(c.name),
+                  showCheckmark: false,
                   selected: c.id == selectedId,
                   onSelected: (_) => onSelected(c.id),
                 ),
