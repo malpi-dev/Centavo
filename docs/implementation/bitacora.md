@@ -5,9 +5,9 @@
 
 ## Avance
 
-`███████▒░░░░░░` 7/14 fases terminadas (50 %)
+`████████░░░░░░` 8/14 fases terminadas (57 %)
 
-**Fase actual:** Fase 08 · Presupuestos (en progreso)
+**Fase actual:** ninguna — la siguiente es la Fase 09 · Dashboard
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -22,7 +22,7 @@
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 07 | Movimientos | `feat/fase-07-movimientos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 08 | Presupuestos | `feat/fase-08-presupuestos` | 🚧 En progreso | 2026-09-29 | — |
+| 08 | Presupuestos | `feat/fase-08-presupuestos` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 09 | Dashboard | `feat/fase-09-dashboard` | ⏳ Pendiente | — | — |
 | 10 | Ajustes, bloqueo y CSV | `feat/fase-10-ajustes-bloqueo-y-csv` | ⏳ Pendiente | — | — |
 | 11 | Backend Supabase | `feat/fase-11-backend-supabase` | ⏳ Pendiente | — | — |
@@ -61,6 +61,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 08 · Presupuestos — 2026-09-29
+- **Hecho:** `budgets_providers` (`monthBudgets`, `budgetProgress`, `canCopyPreviousBudgets`, `activeBudget`, `BudgetFormController`, `CopyBudgetsController`), `BudgetsScreen` (selector con máximo mes actual + 1, tarjeta resumen con "Unbudgeted spending", tarjetas por categoría con barra, color y etiqueta de estado, sección "Not budgeted", estado vacío con *Copy from previous month*, skeleton y error con *Retry*), `BudgetFormScreen` (fijar, editar, quitar con confirmación, "Spent so far", estado "not found"), ruta `/budgets/edit` y `Routes.budgetEditFor`; textos l10n. Tests de pantalla, formulario, demo y reactividad (`./tool/check.sh` pasa, 288 tests). Verificado en emulador Android (emulator-5554, modo oscuro): Food = 600 -> gasto 450 (*On track*) -> +100 (*Near limit*) -> mes siguiente -> *Copy from previous month* ("Copied 1 budget"); en demo, Transport y Coffee *Over budget* y Entertainment *Near limit*.
+- **PR:** ver historial de GitHub (`feat: phase 08 - budgets`).
+- **Decisiones:** ver tabla de desviaciones.
+- **Pendientes:** *Remove budget* y errores de validación se cubrieron con tests de widgets, no a mano; repetir a mano en la fase 13.
 
 ### Fase 07 · Movimientos — 2026-09-29
 - **Hecho:** `rootScaffoldMessengerKey` (todos los SnackBars pasan por él); `transactions_providers` (`monthTransactions`, `TransactionFilter`/controlador, `transactionGroups`, `transactionById`), `groupTransactionsByDay`, `TransactionsScreen` (selector de mes, filtros por tipo/categoría, lista por día con neto, `Dismissible`, estados de carga/vacío/vacío filtrado/error), `TransactionFormScreen` (crear/editar/borrar, categorías archivadas al editar), `TransactionFormController`, `confirmAndDeleteTransaction` (diálogo + *Undo* 4 s); FAB `+` en Dashboard/Transactions/Budgets; rutas `/transactions/new` y `/transactions/:id` a pantalla completa; `MoneyText.signed`; textos l10n. Tests de agrupación, pantalla, formulario, borrado y modo demo (`./tool/check.sh` pasa). Verificado en emulador Android (emulator-5554, modo oscuro, modo avión activado): FAB desde Dashboard, crear gasto 12.50 en Food, lista con `−$12.50` y neto del día, deslizar -> diálogo -> borrado -> SnackBar con *Undo* -> estado vacío.
@@ -166,6 +172,8 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 07 | `Dismissible.confirmDismiss` siempre devuelve `false` tras borrar. | La fila desaparece por el stream; evita el error de Dismissible "still in the tree". |
 | 2026-09-29 | 07 | Las keys `tx-type-*` van en el `Text` de cada `ButtonSegment` (no tiene `key`); chips de categoría sin checkmark. | `ButtonSegment` no acepta key; el checkmark tapaba el avatar. |
 | 2026-09-29 | 07 | `pumpCentavo` acepta `overrides`; `MoneyText` gana `signed`. | Test del error del stream y signo `+` en ingresos. |
+| 2026-09-29 | 08 | `BudgetFormScreen.month` es `YearMonth?` (null = mes malformado en la URL); el parseo con `try/catch` vive en el router. | Permite mostrar el estado "not found" sin lanzar en el builder. |
+| 2026-09-29 | 08 | `app_smoke_test` pasa a `testCentavo` y comprueba la pantalla de Budgets en vez de "Coming soon". | El placeholder desapareció; la pantalla real usa streams de Drift (timers pendientes). |
 
 ## Bloqueos
 
