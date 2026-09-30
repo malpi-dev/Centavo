@@ -2,6 +2,9 @@ import 'package:centavo/app.dart';
 import 'package:centavo/core/database/app_database.dart';
 import 'package:centavo/core/di/provider_retry.dart';
 import 'package:centavo/core/di/repository_providers.dart';
+import 'package:centavo/features/export/data/mock_csv_share_service.dart';
+import 'package:centavo/features/security/data/mock_biometric_repository.dart';
+import 'package:centavo/features/security/data/noop_secure_window_service.dart';
 import 'package:centavo/features/settings/domain/app_settings.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -16,6 +19,9 @@ Future<({AppDatabase db, ProviderContainer container})> pumpCentavo(
   WidgetTester tester, {
   AppSettings settings = const AppSettings(),
   List<Override> overrides = const [],
+  MockBiometricRepository? biometric,
+  NoopSecureWindowService? secureWindow,
+  MockCsvShareService? csvShare,
 }) async {
   tester.view
     ..physicalSize = const Size(800, 1600)
@@ -27,7 +33,12 @@ Future<({AppDatabase db, ProviderContainer container})> pumpCentavo(
     ProviderScope(
       retry: noAutomaticRetry,
       overrides: [
-        ...testOverrides(settings: settings),
+        ...testOverrides(
+          settings: settings,
+          biometric: biometric,
+          secureWindow: secureWindow,
+          csvShare: csvShare,
+        ),
         appDatabaseProvider.overrideWithValue(db),
         ...overrides,
       ],

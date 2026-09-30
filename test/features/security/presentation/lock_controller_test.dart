@@ -95,8 +95,7 @@ void main() {
   });
 
   test('turning the setting on sets FLAG_SECURE without locking', () async {
-    final c = make(lockEnabled: false);
-    c.read(lockControllerProvider);
+    final c = make(lockEnabled: false)..read(lockControllerProvider);
     await c
         .read(settingsControllerProvider.notifier)
         .change((s) => s.copyWith(biometricLockEnabled: true));
