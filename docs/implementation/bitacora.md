@@ -5,9 +5,9 @@
 
 ## Avance
 
-`█░░░░░░░░░░░░░` 1/14 fases terminadas (7 %)
+`██░░░░░░░░░░░░` 2/14 fases terminadas (14 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 02 · Core
+**Fase actual:** ninguna — la siguiente es la Fase 03 · Dominio
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -16,7 +16,7 @@
 | # | Fase | Rama | Estado | Inicio | Fin |
 |---|---|---|---|---|---|
 | 01 | Andamiaje | `feat/fase-01-andamiaje` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 02 | Core | `feat/fase-02-core` | ⏳ Pendiente | — | — |
+| 02 | Core | `feat/fase-02-core` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 03 | Dominio | `feat/fase-03-dominio` | ⏳ Pendiente | — | — |
 | 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ⏳ Pendiente | — | — |
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ⏳ Pendiente | — | — |
@@ -61,6 +61,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
 
+### Fase 02 · Core — 2026-09-29
+- **Hecho:** value objects (`LocalDate`, `YearMonth`, `Money`, `Currency`, `Clock`/`FixedClock`, `IdGenerator`, `parseAmountToMinor`, paleta de categorías, `AppMode`), `DomainError` sellado, `Env`, fuentes Manrope + Inter con licencias OFL, tema claro/oscuro con `CentavoColors`, `AppSettings` con repos `prefs` e `in_memory`, providers base (composition root, `AppModeController`, `SettingsController`, `SelectedMonth`), textos l10n y `errorMessage` exhaustivo, widgets comunes (`AsyncStateView`, `EmptyState`, `ErrorState`, `SkeletonList`, `MonthSelector`, `MoneyText`), router con redirect puro y shell de 4 tabs, pantallas provisionales, helpers y tests (47). `./tool/check.sh` pasa.
+- **PR:** ver historial de GitHub (`feat: phase 02 - core`).
+- **Decisiones:** ver tabla de desviaciones.
+- **Pendientes:** ninguno. Verificación manual hecha en el emulador Android (emulator-5554): Welcome -> Start fresh -> tabs, modo oscuro del sistema aplicado, y tras cerrar y reabrir entra directo a Dashboard.
+
 ### Fase 01 · Andamiaje — 2026-09-29
 - **Hecho:** `flutter create` (`com.malpidev.centavo`), dependencias de §9 (sin `csv`), `very_good_analysis`, `build.yaml`, l10n (`app_en.arb`), `MainActivity` con `FlutterFragmentActivity`, `USE_BIOMETRIC`, cleartext solo en debug, estructura de carpetas, `.env.example.json`, `.gitignore`, `tool/check.sh` y `tool/check_architecture.sh`, app mínima + test de humo, `CLAUDE.md` y `README.md`, CI. `./tool/check.sh` pasa; la app abre en el emulador Android (Pixel_10_Pro) mostrando "Centavo"; `flutter build apk --debug` OK.
 - **PR:** ver historial de GitHub (`feat: phase 01 - project scaffolding`).
@@ -100,6 +106,11 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 01 | `dart run build_runner build` avisa que `--delete-conflicting-outputs` ya no existe (se ignora). Se deja el flag en `check.sh` según la guía. | Inofensivo; quitarlo en una fase futura. |
 | 2026-09-29 | 01 | En CI se usa `actions/checkout@v7` y `flutter-version: 3.44.6`. | Última versión mayor disponible; misma versión que local. |
 | 2026-09-29 | 01 | Dependencias de desarrollo ordenadas alfabéticamente. | Lint `sort_pub_dependencies`. |
+| 2026-09-29 | 02 | `FixedClock` usa el parámetro nombrado privado `{this._today}` (Dart 3.12) en vez de `today` + campo `_today`. | Evita el lint `prefer_initializing_formals`; la API pública (`today:`) es idéntica. |
+| 2026-09-29 | 02 | `LocalDate.parse` valida con un helper privado `_exists` en vez de capturar `ArgumentError`. | Lint `avoid_catching_errors`. |
+| 2026-09-29 | 02 | `IdGenerator` lleva `// ignore: one_member_abstracts` con justificación. | Es un seam de inyección para tests (id secuenciales). |
+| 2026-09-29 | 02 | Licencia OFL de Manrope tomada de `google/fonts` (el repo original no expone `OFL.txt`); la de Inter, de `rsms/inter` (`LICENSE.txt`). | Fuente oficial más estable. |
+| 2026-09-29 | 02 | `MonthSelector` añadió operadores `<`, `<=`, `>`, `>=` a `YearMonth`. | Comparar `month >= maxMonth` de forma legible; sin dependencia nueva. |
 
 ## Bloqueos
 
