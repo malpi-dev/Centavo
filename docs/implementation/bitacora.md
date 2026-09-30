@@ -5,9 +5,9 @@
 
 ## Avance
 
-`██░░░░░░░░░░░░` 2/14 fases terminadas (14 %)
+`███░░░░░░░░░░░` 3/14 fases terminadas (21 %)
 
-**Fase actual:** ninguna — la siguiente es la Fase 03 · Dominio
+**Fase actual:** ninguna — la siguiente es la Fase 04 · Persistencia Drift
 **Última actualización:** 2026-09-29
 **Ventana planificada:** semana 1 (28 sep – 4 oct 2026), en paralelo con Agendo; MVP listo antes del 11 oct.
 
@@ -17,7 +17,7 @@
 |---|---|---|---|---|---|
 | 01 | Andamiaje | `feat/fase-01-andamiaje` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 02 | Core | `feat/fase-02-core` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
-| 03 | Dominio | `feat/fase-03-dominio` | ⏳ Pendiente | — | — |
+| 03 | Dominio | `feat/fase-03-dominio` | ✅ Terminada | 2026-09-29 | 2026-09-29 |
 | 04 | Persistencia Drift | `feat/fase-04-persistencia-drift` | ⏳ Pendiente | — | — |
 | 05 | Modo demo | `feat/fase-05-modo-demo` | ⏳ Pendiente | — | — |
 | 06 | Onboarding y categorías | `feat/fase-06-onboarding-y-categorias` | ⏳ Pendiente | — | — |
@@ -60,6 +60,12 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 > - **PR:** enlace o número.
 > - **Decisiones:** qué se decidió y por qué (también va a la tabla de abajo si cambia la definición).
 > - **Pendientes:** lo que quedó para otra fase (con el número de fase destino).
+
+### Fase 03 · Dominio — 2026-09-29
+- **Hecho:** `TransactionType` y `LocalStore` en `core/domain`; modelos freezed (`Category`, `MoneyTransaction`, `TransactionDraft`, `Budget`, `BudgetLine`, `BudgetProgressReport`, `CategorySlice`, `MonthSummary`, `MonthTotals`); interfaces `CategoryRepository`, `TransactionRepository`, `BudgetRepository`, `CsvShareService`; categorías por defecto con UUID fijos; validadores de categoría, movimiento y presupuesto; casos de uso `SeedDefaultCategories`, `DeleteOrArchiveCategory`, `GetBudgetProgress` (estados con enteros), `CopyBudgetsFromPreviousMonth`, `GetMonthSummary`, `GetMonthlyTrend`, `ExportTransactionsCsv` + `buildTransactionsCsv`; `test/helpers/builders.dart` y tests de todos los archivos de la tabla (116 tests en total). `./tool/check.sh` pasa.
+- **PR:** ver historial de GitHub (`feat: phase 03 - domain`).
+- **Decisiones:** ver tabla de desviaciones.
+- **Pendientes:** ninguno.
 
 ### Fase 02 · Core — 2026-09-29
 - **Hecho:** value objects (`LocalDate`, `YearMonth`, `Money`, `Currency`, `Clock`/`FixedClock`, `IdGenerator`, `parseAmountToMinor`, paleta de categorías, `AppMode`), `DomainError` sellado, `Env`, fuentes Manrope + Inter con licencias OFL, tema claro/oscuro con `CentavoColors`, `AppSettings` con repos `prefs` e `in_memory`, providers base (composition root, `AppModeController`, `SettingsController`, `SelectedMonth`), textos l10n y `errorMessage` exhaustivo, widgets comunes (`AsyncStateView`, `EmptyState`, `ErrorState`, `SkeletonList`, `MonthSelector`, `MoneyText`), router con redirect puro y shell de 4 tabs, pantallas provisionales, helpers y tests (47). `./tool/check.sh` pasa.
@@ -111,6 +117,10 @@ Estados: ⏳ Pendiente · 🚧 En progreso · ✅ Terminada · ⛔ Bloqueada
 | 2026-09-29 | 02 | `IdGenerator` lleva `// ignore: one_member_abstracts` con justificación. | Es un seam de inyección para tests (id secuenciales). |
 | 2026-09-29 | 02 | Licencia OFL de Manrope tomada de `google/fonts` (el repo original no expone `OFL.txt`); la de Inter, de `rsms/inter` (`LICENSE.txt`). | Fuente oficial más estable. |
 | 2026-09-29 | 02 | `MonthSelector` añadió operadores `<`, `<=`, `>`, `>=` a `YearMonth`. | Comparar `month >= maxMonth` de forma legible; sin dependencia nueva. |
+| 2026-09-29 | 03 | Los constructores de casos de uso usan parámetros nombrados privados (`required this._x`, Dart 3.12). | Evita el lint `prefer_initializing_formals`; API pública idéntica. |
+| 2026-09-29 | 03 | `Category`, `Budget`, `MoneyTransaction`, etc. sitúan los parámetros requeridos antes de los opcionales; `CategorySlice` pone `amount`/`basisPoints` primero. | Lint `always_put_required_named_parameters_first`; el orden no afecta a la API. |
+| 2026-09-29 | 03 | Se añadió `budget_validator_test.dart` (no estaba en la tabla de tests). | Cubre `validateBudgetForm`. |
+| 2026-09-29 | 03 | `CsvShareService` lleva `// ignore: one_member_abstracts` con justificación. | Puerto con un único método, implementado por el adaptador de plataforma. |
 
 ## Bloqueos
 
